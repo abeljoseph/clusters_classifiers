@@ -35,6 +35,16 @@ for cla in class_list:
 for cla in class_list:
 	cla.eigenvals, cla.eigenvecs = np.linalg.eig(cla.covariance)
 
+max_index = np.where(a.eigenvals == max(a.eigenvals))[0][0]
+min_index = np.where(a.eigenvals == min(a.eigenvals))[0][0]
+largest_eigval = a.eigenvals[max_index]
+smallest_eigval = a.eigenvals[min_index]
+largest_eigvec = a.eigenvecs[:, max_index]
+smallest_eigvec = a.eigenvecs[:, min_index]
+
+theta = np.arctan(largest_eigvec)
+print(len(theta))
+print(theta)
 
 # Create scatters
 # plt.scatter([x[0] for x in c.cluster], [x[1] for x in c.cluster])
