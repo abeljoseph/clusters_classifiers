@@ -25,4 +25,8 @@ c.cluster = class_.create_normal_distribution(c.n, c.mean, c.covariance)
 d.cluster = class_.create_normal_distribution(d.n, d.mean, d.covariance)
 e.cluster = class_.create_normal_distribution(e.n, e.mean, e.covariance)
 
+plt.scatter([x[0] for x in c.cluster], [x[1] for x in c.cluster])
+plt.scatter([x[0] for x in d.cluster], [x[1] for x in d.cluster])
+plt.scatter([x[0] for x in e.cluster], [x[1] for x in e.cluster])
+
 plt.show()
