@@ -60,6 +60,20 @@ for cla in class_list:
 # Create scatters
 fig = plt.figure(figsize=(20, 10))
 
+# Create Mesh grid
+x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1)
+y_grid = np.linspace(min(*a.cluster[:, 1], *b.cluster[:, 1]) - 1, max(*a.cluster[:, 1], *b.cluster[:, 1]) + 1)
+
+x0, y0 = np.meshgrid(x_grid, y_grid)
+MED_ab = [[0 for _ in range(len(y0))]for _ in range(len(x0))]
+
+for i in range(len(x0)):
+	for j in range(len(y0)):
+		a_dist = (x0[i][j] - a.mean[0])**2 + (y0[i][j] - a.mean[1])**2
+		b_dist = (x0[i][j] - b.mean[0])**2 + (y0[i][j] - b.mean[1])**2
+		MED_ab[i][j] = a_dist - b_dist
+
+# Plot A and B
 plt.subplot(121)
 plt.xlabel("Feature 1")
 plt.ylabel("Feature 2")
@@ -69,6 +83,9 @@ a.plot()
 b.plot()
 plt.legend(["Class A", "Class B"])
 
+plt.contour(x0, y0, MED_ab)
+
+# Plot C, D, E
 plt.subplot(122)
 plt.xlabel("Feature 1")
 plt.ylabel("Feature 2")
