@@ -58,8 +58,25 @@ for cla in class_list:
 	cla.eigenvals, cla.eigenvecs = np.linalg.eig(cla.covariance)
 
 # Create scatters
+fig = plt.figure(figsize=(20, 10))
+
+plt.subplot(121)
+plt.xlabel("Feature 1")
+plt.ylabel("Feature 2")
+plt.title("Feature 2 vs. Feature 1 for classes A and B")
+plt.grid()
 a.plot()
 b.plot()
+plt.legend(["Class A", "Class B"])
+
+plt.subplot(122)
+plt.xlabel("Feature 1")
+plt.ylabel("Feature 2")
+plt.title("Feature 2 vs. Feature 1 for classes C, D and E")
+plt.grid()
+c.plot()
+d.plot()
 e.plot()
+plt.legend(["Class C", "Class D", "Class E"])
 
 plt.show()
