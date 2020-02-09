@@ -7,3 +7,7 @@ class class_:
 		self.mean = mean
 		self.n = n
 		self.cluster = 0
+
+	@staticmethod
+	def create_normal_distribution(size, mean, std_dev):
+		return np.random.multivariate_normal(mean, std_dev, size=size)
