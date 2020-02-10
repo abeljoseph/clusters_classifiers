@@ -50,17 +50,16 @@ class classifiers:
 		y_grid = np.linspace(min(*a.cluster[:, 1], *b.cluster[:, 1]) - 1, max(*a.cluster[:, 1], *b.cluster[:, 1]) + 1, num_steps)
 
 		x0, y0 = np.meshgrid(x_grid, y_grid)
-		boundary=[]
+		boundary=[[0 for _ in range(len(x_grid))]for _ in range(len(y_grid))]
 
 		for i in range(num_steps):
 			for j in range(num_steps):
 				a_dist = sqrt((x0[i][j] - a.mean[0])**2 + (y0[i][j] - a.mean[1])**2)
 				b_dist = sqrt((x0[i][j] - b.mean[0])**2 + (y0[i][j] - b.mean[1])**2)
 				
-				if(abs(a_dist - b_dist) < 0.001):
-					boundary.append((x0[i][j], y0[i][j]))
+				boundary[i][j] = a_dist - b_dist
 
-		return boundary
+		return [boundary, x_grid, y_grid]
 		
 	
 	@staticmethod
@@ -72,7 +71,7 @@ class classifiers:
 		y_grid = np.linspace(min(*c.cluster[:, 1], *d.cluster[:, 1], *e.cluster[:, 1]) - 1, max(*c.cluster[:, 1], *d.cluster[:, 1], *e.cluster[:, 1]) + 1, num_steps)
 
 		x0, y0 = np.meshgrid(x_grid, y_grid)
-		boundary=[]
+		boundary=[[0 for _ in range(len(x_grid))]for _ in range(len(y_grid))]
 
 		for i in range(num_steps):
 			for j in range(num_steps):
@@ -80,13 +79,15 @@ class classifiers:
 				d_dist = sqrt((x0[i][j] - d.mean[0])**2 + (y0[i][j] - d.mean[1])**2)
 				e_dist = sqrt((x0[i][j] - e.mean[0])**2 + (y0[i][j] - e.mean[1])**2)
 
-				# Find two smallest distances
-				dist_1, dist_2 = np.partition([c_dist, d_dist, e_dist], 1)[0:2]
-				
-				if(abs(dist_1 - dist_2) < 0.001):
-					boundary.append((x0[i][j], y0[i][j]))
+				if min(c_dist, d_dist, e_dist) == c_dist:
+					boundary[i][j] = 1
+				elif min(c_dist, d_dist, e_dist) == d_dist:
+					boundary[i][j] = 2
+				else:
+					boundary[i][j] = 3
 
-		return boundary
+
+		return [boundary, x_grid, y_grid]
 
 		
 if __name__ == "__main__":
@@ -108,8 +109,8 @@ if __name__ == "__main__":
 		cla.eigenvals, cla.eigenvecs = np.linalg.eig(cla.covariance)
 
 	# Determine MED classifiers
-	MED_ab = classifiers.med2(a, b)
-	MED_cde = classifiers.med3(c, d, e)
+	MED_ab, x_grid, y_grid = classifiers.med2(a, b)
+	MED_cde, x_grid1, y_grid1 = classifiers.med3(c, d, e)
 
 	# Create scatters and set appearance
 	fig, axs = plt.subplots(1, 2, figsize=(20, 10), subplot_kw={'aspect': 1})
@@ -125,8 +126,9 @@ if __name__ == "__main__":
 	a.plot(axs[0])
 	b.plot(axs[0])
 	# Plot Classifiers
-	axs[0].plot([x[0] for x in MED_ab], [x[1] for x in MED_ab])
-	axs[0].legend(["Class A", "Class B", "MED Decision Boundary"])
+
+	axs[0].contour(x_grid, y_grid, MED_ab, levels=[0], colors="black")
+	axs[0].legend(["Class A", "Class B"])
 
 	# Plot C, D, E
 	axs[1].set_title("Feature 2 vs. Feature 1 for classes C, D and E")
@@ -134,7 +136,7 @@ if __name__ == "__main__":
 	d.plot(axs[1])
 	e.plot(axs[1])
 	# Plot Classifiers
-	axs[1].scatter([x[0] for x in MED_cde], [x[1] for x in MED_cde])
+	axs[1].contour(x_grid1, y_grid1, MED_cde, colors="black")
 	axs[1].legend(["Class C", "Class D", "Class E", "MED Decision Boundary"])
 
 	plt.show()
