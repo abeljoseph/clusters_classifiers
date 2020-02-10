@@ -40,9 +40,9 @@ class class_:
 		ax.scatter([x[0] for x in self.cluster], [x[1] for x in self.cluster])
 
 
-class classifiers:
+class classifier:
 	@staticmethod
-	def med2(a, b):
+	def create_med2(a, b):
 		num_steps = 2000
 
 		# Create Mesh grid
@@ -63,7 +63,7 @@ class classifiers:
 		
 	
 	@staticmethod
-	def med3(c, d, e):
+	def create_med3(c, d, e):
 		num_steps = 2000
 
 		# Create Mesh grid
@@ -109,8 +109,8 @@ if __name__ == "__main__":
 		cla.eigenvals, cla.eigenvecs = np.linalg.eig(cla.covariance)
 
 	# Determine MED classifiers
-	MED_ab, x_grid, y_grid = classifiers.med2(a, b)
-	MED_cde, x_grid1, y_grid1 = classifiers.med3(c, d, e)
+	MED_ab, x_grid, y_grid = classifier.create_med2(a, b)
+	MED_cde, x_grid1, y_grid1 = classifier.create_med3(c, d, e)
 
 	# Create scatters and set appearance
 	fig, axs = plt.subplots(1, 2, figsize=(20, 10), subplot_kw={'aspect': 1})
