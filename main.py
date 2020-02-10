@@ -80,12 +80,10 @@ class classifiers:
 				d_dist = sqrt((x0[i][j] - d.mean[0])**2 + (y0[i][j] - d.mean[1])**2)
 				e_dist = sqrt((x0[i][j] - e.mean[0])**2 + (y0[i][j] - e.mean[1])**2)
 
-				# Find minimum distance difference between the three classes
-				min_diff = min( abs(c_dist - d_dist),
-								abs(c_dist - e_dist),
-								abs(d_dist - e_dist))
+				# Find two smallest distances
+				dist_1, dist_2 = np.partition([c_dist, d_dist, e_dist], 1)[0:2]
 				
-				if(min_diff < 0.001):
+				if(abs(dist_1 - dist_2) < 0.001):
 					boundary.append((x0[i][j], y0[i][j]))
 
 		return boundary
