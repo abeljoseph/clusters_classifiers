@@ -125,7 +125,7 @@ if __name__ == "__main__":
 	a.plot(axs[0])
 	b.plot(axs[0])
 	# Plot Classifiers
-	axs[0].scatter([x[0] for x in MED_ab], [x[1] for x in MED_ab])
+	axs[0].plot([x[0] for x in MED_ab], [x[1] for x in MED_ab])
 	axs[0].legend(["Class A", "Class B", "MED Decision Boundary"])
 
 	# Plot C, D, E
