@@ -261,7 +261,6 @@ class classifier:
 			for j in range(num_steps):
 				# Find nearest neighbours
 				a_group = [float('inf') for _ in range(4)]
-
 				for coord in a.cluster:
 					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
 					if temp_dist < max(a_group):
@@ -278,6 +277,60 @@ class classifier:
 				b_dist = np.mean(b_group)
 
 				boundary[i][j] = a_dist - b_dist
+
+				# Print progress
+				sys.stdout.write('\r')
+				sys.stdout.write('{0:6.2f}% of {1:3}/{2:3}'.format((j+1)/num_steps*100, i+1, num_steps))
+
+		print('... completed.')
+		return [boundary, x_grid, y_grid]
+
+
+	@staticmethod
+	def create_knn3(c, d, e):
+		print('Calculating KNN3...')
+		num_steps = 100
+
+		# Create Mesh grid
+		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1, num_steps)
+		y_grid = np.linspace(min(*a.cluster[:, 1], *b.cluster[:, 1]) - 1, max(*a.cluster[:, 1], *b.cluster[:, 1]) + 1, num_steps)
+
+		x0, y0 = np.meshgrid(x_grid, y_grid)
+		boundary=[[0 for _ in range(len(x_grid))]for _ in range(len(y_grid))]
+
+		for i in range(num_steps):
+			for j in range(num_steps):
+				# Find nearest neighbours
+				c_group = [float('inf') for _ in range(4)]
+				for coord in c.cluster:
+					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
+					if temp_dist < max(c_group):
+						c_group[c_group.index(max(c_group))] = temp_dist
+				
+				c_dist = np.mean(c_group)
+
+				d_group = [float('inf') for _ in range(4)]
+				for coord in d.cluster:
+					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
+					if temp_dist < max(d_group):
+						d_group[d_group.index(max(d_group))] = temp_dist
+				
+				d_dist = np.mean(d_group)
+
+				e_group = [float('inf') for _ in range(4)]
+				for coord in e.cluster:
+					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
+					if temp_dist < max(e_group):
+						e_group[e_group.index(max(e_group))] = temp_dist
+				
+				e_dist = np.mean(e_group)
+
+				if min(c_dist, d_dist, e_dist) == c_dist:
+					boundary[i][j] = 1
+				elif min(c_dist, d_dist, e_dist) == d_dist:
+					boundary[i][j] = 2
+				else:
+					boundary[i][j] = 3
 
 				# Print progress
 				sys.stdout.write('\r')
@@ -349,6 +402,7 @@ if __name__ == "__main__":
 	
 	# Determine KNN classifiers
 	KNN_ab, knn_ab_x, knn_ab_y = classifier.create_knn2(a,b)
+	KNN_cde, knn_cde_x, knn_cde_y = classifier.create_knn3(c, d, e)
 
 	# Create scatters and set appearance for NN, and 5NN
 	fig2, axs2 = plt.subplots(1, 2, figsize=(20, 10), subplot_kw={'aspect': 1})
@@ -376,6 +430,7 @@ if __name__ == "__main__":
 
 	# Plot Classifiers
 	axs2[1].contour(nn_cde_x, nn_cde_y, NN_cde, colors="red")
+	axs2[1].contour(knn_cde_x, knn_cde_y, KNN_cde, colors="black")
 	axs2[1].legend(["Class C", "Class D", "Class E"])
 
 	plt.show()
