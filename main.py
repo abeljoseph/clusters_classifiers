@@ -178,17 +178,65 @@ class classifier:
 				# Find nearest neighbours
 				a_dist = float('inf')
 				for coord in a.cluster:
-					temp_dist = a_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
+					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
 					if temp_dist < a_dist:
 						a_dist = temp_dist
 
 				b_dist = float('inf')
 				for coord in b.cluster:
-					temp_dist = b_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
+					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
 					if temp_dist < b_dist:
 						b_dist = temp_dist
 				
 				boundary[i][j] = a_dist - b_dist
+
+				# Print progress
+				sys.stdout.write('\r')
+				sys.stdout.write('{0:6.2f}% of {1:3}/{2:3}'.format((j+1)/num_steps*100, i+1, num_steps))
+
+		print('... completed.')
+		return [boundary, x_grid, y_grid]
+
+	
+	@staticmethod
+	def create_nn3(c, d, e):
+		print('Calculating NN3...')
+		num_steps = 100
+
+		# Create Mesh grid
+		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1, num_steps)
+		y_grid = np.linspace(min(*a.cluster[:, 1], *b.cluster[:, 1]) - 1, max(*a.cluster[:, 1], *b.cluster[:, 1]) + 1, num_steps)
+
+		x0, y0 = np.meshgrid(x_grid, y_grid)
+		boundary=[[0 for _ in range(len(x_grid))]for _ in range(len(y_grid))]
+
+		for i in range(num_steps):
+			for j in range(num_steps):
+				# Find nearest neighbours
+				c_dist = float('inf')
+				for coord in c.cluster:
+					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
+					if temp_dist < c_dist:
+						c_dist = temp_dist
+
+				d_dist = float('inf')
+				for coord in d.cluster:
+					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
+					if temp_dist < d_dist:
+						d_dist = temp_dist
+				
+				e_dist = float('inf')
+				for coord in e.cluster:
+					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
+					if temp_dist < e_dist:
+						e_dist = temp_dist
+
+				if min(c_dist, d_dist, e_dist) == c_dist:
+					boundary[i][j] = 1
+				elif min(c_dist, d_dist, e_dist) == d_dist:
+					boundary[i][j] = 2
+				else:
+					boundary[i][j] = 3
 
 				# Print progress
 				sys.stdout.write('\r')
@@ -256,6 +304,7 @@ if __name__ == "__main__":
 
 	# Determine NN classifiers
 	NN_ab, nn_ab_x, nn_ab_y = classifier.create_nn2(a, b)
+	NN_cde, nn_cde_x, nn_cde_y = classifier.create_nn3(c, d, e)
 
 	# Create scatters and set appearance for NN, and 5NN
 	fig2, axs2 = plt.subplots(1, 2, figsize=(20, 10), subplot_kw={'aspect': 1})
@@ -281,6 +330,7 @@ if __name__ == "__main__":
 	e.plot(axs2[1])
 
 	# Plot Classifiers
+	axs2[1].contour(nn_cde_x, nn_cde_y, NN_cde, colors="red")
 	axs2[1].legend(["Class C", "Class D", "Class E"])
 
 	plt.show()
