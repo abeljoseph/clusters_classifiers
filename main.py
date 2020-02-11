@@ -386,7 +386,11 @@ class classifier:
 		x0, y0 = np.meshgrid(x_grid, y_grid)
 		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
 
-		# TODO: implement
+		# Calculate P(a) and P(b)
+		p_a = a.n / (a.n + b.n)
+		p_b = b.n / (a.n + b.n)
+
+		# Calculate marginal of a and b
 
 	@staticmethod
 	def create_map3(c, d, e):
@@ -489,7 +493,7 @@ if __name__ == "__main__":
 	axs2[1].contour(knn_cde_x, knn_cde_y, KNN_cde, colors="black")
 	axs2[1].legend(["Class C", "Class D", "Class E"])
 
-	#plt.show()
+	plt.show()
 
 	#Error Analysis
 	#Making an array of 1s for all points in class A and an array of 2s for all points in class B
