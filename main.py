@@ -40,9 +40,15 @@ class class_:
 		ax.scatter([x[0] for x in self.cluster], [x[1] for x in self.cluster])
 
 
-class classifiers:
+class classifier:
 	@staticmethod
-	def med2(a, b):
+	def getEuclideanDistance(px1, py1, x0, y0, i, j):
+		return sqrt((x0[i][j] - px1)**2 + (y0[i][j] - py1)**2)
+			
+			
+	@staticmethod
+	def create_med2(a, b):
+		print('Calculating MED2')
 		num_steps = 500
 
 		# Create Mesh grid
@@ -54,11 +60,12 @@ class classifiers:
 
 		for i in range(num_steps):
 			for j in range(num_steps):
-				a_dist = sqrt((x0[i][j] - a.mean[0])**2 + (y0[i][j] - a.mean[1])**2)
-				b_dist = sqrt((x0[i][j] - b.mean[0])**2 + (y0[i][j] - b.mean[1])**2)
+				a_dist = classifier.getEuclideanDistance(a.mean[0], a.mean[1], x0, y0, i, j)
+				b_dist = classifier.getEuclideanDistance(b.mean[0], b.mean[1], x0, y0, i, j)
 				
 				boundary[i][j] = a_dist - b_dist
 
+		print('Completed MED2')
 		return [boundary, x_grid, y_grid]
 
 
@@ -87,7 +94,8 @@ class classifiers:
 
 
 	@staticmethod
-	def med3(c, d, e):
+	def create_med3(c, d, e):
+		print('Calculating MED3')
 		num_steps = 500
 
 		# Create Mesh grid
@@ -99,9 +107,9 @@ class classifiers:
 
 		for i in range(num_steps):
 			for j in range(num_steps):
-				c_dist = sqrt((x0[i][j] - c.mean[0])**2 + (y0[i][j] - c.mean[1])**2)
-				d_dist = sqrt((x0[i][j] - d.mean[0])**2 + (y0[i][j] - d.mean[1])**2)
-				e_dist = sqrt((x0[i][j] - e.mean[0])**2 + (y0[i][j] - e.mean[1])**2)
+				c_dist = classifier.getEuclideanDistance(c.mean[0], c.mean[1], x0, y0, i, j)
+				d_dist = classifier.getEuclideanDistance(d.mean[0], d.mean[1], x0, y0, i, j)
+				e_dist = classifier.getEuclideanDistance(e.mean[0], e.mean[1], x0, y0, i, j)
 
 				if min(c_dist, d_dist, e_dist) == c_dist:
 					boundary[i][j] = 1
@@ -110,7 +118,7 @@ class classifiers:
 				else:
 					boundary[i][j] = 3
 
-
+		print('Completed MED3')
 		return [boundary, x_grid, y_grid]
 
 
@@ -168,12 +176,12 @@ if __name__ == "__main__":
 		cla.eigenvals, cla.eigenvecs = np.linalg.eig(cla.covariance)
 
 	# Determine MED classifiers
-	MED_ab, x_grid, y_grid = classifiers.med2(a, b)
-	MED_cde, x_grid1, y_grid1 = classifiers.med3(c, d, e)
+	MED_ab, x_grid, y_grid = classifier.create_med2(a, b)
+	MED_cde, x_grid1, y_grid1 = classifier.create_med3(c, d, e)
 
 	# Determine GED classifiers
-	GED_ab, ged_x, ged_y = classifiers.ged2(a, b)
-	GED_cde, ged_x1, ged_y1 = classifiers.ged3(c, d, e)
+	GED_ab, ged_x, ged_y = classifier.ged2(a, b)
+	GED_cde, ged_x1, ged_y1 = classifier.ged3(c, d, e)
 
 	# Create scatters and set appearance
 	fig, axs = plt.subplots(1, 2, figsize=(20, 10), subplot_kw={'aspect': 1})
@@ -182,19 +190,15 @@ if __name__ == "__main__":
 		ax.set(xlabel='Feature 1', ylabel='Feature 2')
 		ax.set_aspect('equal')
 		ax.grid()
-		ax.set()
-
-	# MED Plots
+	
 	# Plot A and B
 	axs[0].set_title("MED - Feature 2 vs. Feature 1 for classes A and B")
 	a.plot(axs[0])
 	b.plot(axs[0])
 
 	# Plot Classifiers
-
 	axs[0].contour(x_grid, y_grid, MED_ab, levels=[0], colors="black")
 	axs[0].legend(["Class A", "Class B"])
-
 
 	# Plot C, D, E
 	axs[1].set_title("MED - Feature 2 vs. Feature 1 for classes C, D and E")
