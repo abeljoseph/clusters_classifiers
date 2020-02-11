@@ -43,7 +43,7 @@ class class_:
 class classifiers:
 	@staticmethod
 	def med2(a, b):
-		num_steps = 2000
+		num_steps = 100
 
 		# Create Mesh grid
 		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1, num_steps)
@@ -60,11 +60,37 @@ class classifiers:
 				boundary[i][j] = a_dist - b_dist
 
 		return [boundary, x_grid, y_grid]
-		
-	
+
+
+	@staticmethod
+	def ged2(a, b):
+		num_steps = 100
+
+		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1, num_steps)
+		y_grid = np.linspace(min(*a.cluster[:, 1], *b.cluster[:, 1]) - 1, max(*a.cluster[:, 1], *b.cluster[:, 1]) + 1, num_steps)
+
+		x, y = np.meshgrid(x_grid, y_grid)
+
+		inverse_a = np.linalg.inv(a.covariance)
+		inverse_b = np.linalg.inv(b.covariance)
+
+		boundary=[[0 for _ in range(len(x_grid))]for _ in range(len(y_grid))]
+
+		for i in range(num_steps):
+			for j in range(num_steps):
+				coord = [x[i][j], y[i][j]]
+				subtract_1 = sqrt( np.matmul(np.matmul(np.subtract(coord,a.mean), inverse_a), np.subtract(coord, a.mean).T ) )
+				subtract_2 = sqrt( np.matmul(np.matmul(np.subtract(coord,b.mean), inverse_b), np.subtract(coord, b.mean).T ) )
+				boundary[i][j] =  (subtract_1 - subtract_2)
+
+		return [boundary, x_grid, y_grid]
+
+
+
+
 	@staticmethod
 	def med3(c, d, e):
-		num_steps = 2000
+		num_steps = 100
 
 		# Create Mesh grid
 		x_grid = np.linspace(min(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) - 1, max(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) + 1, num_steps)
@@ -89,7 +115,8 @@ class classifiers:
 
 		return [boundary, x_grid, y_grid]
 
-		
+
+
 if __name__ == "__main__":
 	# Instantiate classes
 	a = class_(n=200, mean=[5, 10], covariance=[[8, 0], [0, 4]])
@@ -112,6 +139,9 @@ if __name__ == "__main__":
 	MED_ab, x_grid, y_grid = classifiers.med2(a, b)
 	MED_cde, x_grid1, y_grid1 = classifiers.med3(c, d, e)
 
+	# Determine GED classifiers
+	GED_ab, ged_x, ged_y = classifiers.ged2(a,b)
+
 	# Create scatters and set appearance
 	fig, axs = plt.subplots(1, 2, figsize=(20, 10), subplot_kw={'aspect': 1})
 	
@@ -119,24 +149,57 @@ if __name__ == "__main__":
 		ax.set(xlabel='Feature 1', ylabel='Feature 2')
 		ax.set_aspect('equal')
 		ax.grid()
-		ax.set
-	
+		ax.set()
+
+	# MED Plots
 	# Plot A and B
 	axs[0].set_title("Feature 2 vs. Feature 1 for classes A and B")
 	a.plot(axs[0])
 	b.plot(axs[0])
+
 	# Plot Classifiers
 
 	axs[0].contour(x_grid, y_grid, MED_ab, levels=[0], colors="black")
 	axs[0].legend(["Class A", "Class B"])
+
 
 	# Plot C, D, E
 	axs[1].set_title("Feature 2 vs. Feature 1 for classes C, D and E")
 	c.plot(axs[1])
 	d.plot(axs[1])
 	e.plot(axs[1])
+
 	# Plot Classifiers
 	axs[1].contour(x_grid1, y_grid1, MED_cde, colors="black")
-	axs[1].legend(["Class C", "Class D", "Class E", "MED Decision Boundary"])
+	axs[1].legend(["Class C", "Class D", "Class E"])
+
+	plt.show()
+
+	# GED Plots
+	fig, axs = plt.subplots(1, 2, figsize=(20, 10), subplot_kw={'aspect': 1})
+
+	for ax in axs:
+		ax.set(xlabel='Feature 1', ylabel='Feature 2')
+		ax.set_aspect('equal')
+		ax.grid()
+
+	# Plot A and B
+	axs[0].set_title("Feature 2 vs. Feature 1 for classes A and B")
+	a.plot(axs[0])
+	b.plot(axs[0])
+
+	# Plot Classifiers
+	axs[0].contour(x_grid, y_grid, GED_ab, levels=[0], colors="black")
+	axs[0].legend(["Class A", "Class B"])
+
+	# Plot C, D, E
+	# axs[1].set_title("Feature 2 vs. Feature 1 for classes C, D and E")
+	# c.plot(axs[1])
+	# d.plot(axs[1])
+	# e.plot(axs[1])
+
+	# Plot Classifiers
+	# axs[1].contour(x_grid1, y_grid1, MED_cde, colors="black")
+	# axs[1].legend(["Class C", "Class D", "Class E"])
 
 	plt.show()
