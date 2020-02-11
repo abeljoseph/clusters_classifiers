@@ -13,9 +13,10 @@ class class_:
 		self.covariance = covariance
 		self.mean = mean
 		self.n = n
-		self.cluster = []
-		self.eigenvals = []
-		self.eigenvecs = []
+		self.cluster = self.create_normal_distribution()
+		self.eigenvals, self.eigenvecs = np.linalg.eig(self.covariance)
+		self.testing_cluster = self.create_normal_distribution()
+		
 
 	def create_normal_distribution(self):
 		return np.random.multivariate_normal(self.mean, self.covariance, size=self.n)
@@ -413,14 +414,6 @@ if __name__ == "__main__":
 	e = class_(n=150, mean=[10, 5], covariance=[[10, -5], [-5, 20]])
 
 	class_list = [a, b, c, d, e]
-
-	# Create clusters
-	for cla in class_list:
-		cla.cluster = cla.create_normal_distribution()
-
-	# Determine eigenvalues
-	for cla in class_list:
-		cla.eigenvals, cla.eigenvecs = np.linalg.eig(cla.covariance)
 
 	# Determine MED classifiers
 	MED_ab, med2_cm_boundary, med_ab_x, med_ab_y = classifier.create_med2(a, b)
