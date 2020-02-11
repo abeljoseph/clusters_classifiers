@@ -13,9 +13,11 @@ class class_:
 		self.eigenvals = []
 		self.eigenvecs = []
 
+
 	@staticmethod
 	def create_normal_distribution(size, mean, std_dev):
 		return np.random.multivariate_normal(mean, std_dev, size=size)
+
 
 	def plot(self, ax):
 		max_index = np.where(self.eigenvals == max(self.eigenvals))[0][0]
@@ -42,12 +44,13 @@ class class_:
 
 class classifier:
 	@staticmethod
-	def getEuclideanDistance(cla, x0, y0, i, j):
-		return sqrt((x0[i][j] - cla.mean[0])**2 + (y0[i][j] - cla.mean[1])**2)
+	def getEuclideanDistance(px1, py1, x0, y0, i, j):
+		return sqrt((x0[i][j] - px1)**2 + (y0[i][j] - py1)**2)
 			
 			
 	@staticmethod
 	def create_med2(a, b):
+		print('Calculating MED2')
 		num_steps = 1000
 
 		# Create Mesh grid
@@ -59,16 +62,18 @@ class classifier:
 
 		for i in range(num_steps):
 			for j in range(num_steps):
-				a_dist = classifier.getEuclideanDistance(a, x0, y0, i, j)
-				b_dist = classifier.getEuclideanDistance(b, x0, y0, i, j)
+				a_dist = classifier.getEuclideanDistance(a.mean[0], a.mean[1], x0, y0, i, j)
+				b_dist = classifier.getEuclideanDistance(b.mean[0], b.mean[1], x0, y0, i, j)
 				
 				boundary[i][j] = a_dist - b_dist
 
+		print('Completed MED3')
 		return [boundary, x_grid, y_grid]
 		
 	
 	@staticmethod
 	def create_med3(c, d, e):
+		print('Calculating MED3')
 		num_steps = 1000
 
 		# Create Mesh grid
@@ -80,9 +85,9 @@ class classifier:
 
 		for i in range(num_steps):
 			for j in range(num_steps):
-				c_dist = classifier.getEuclideanDistance(c, x0, y0, i, j)
-				d_dist = classifier.getEuclideanDistance(d, x0, y0, i, j)
-				e_dist = classifier.getEuclideanDistance(e, x0, y0, i, j)
+				c_dist = classifier.getEuclideanDistance(c.mean[0], c.mean[1], x0, y0, i, j)
+				d_dist = classifier.getEuclideanDistance(d.mean[0], d.mean[1], x0, y0, i, j)
+				e_dist = classifier.getEuclideanDistance(e.mean[0], e.mean[1], x0, y0, i, j)
 
 				if min(c_dist, d_dist, e_dist) == c_dist:
 					boundary[i][j] = 1
@@ -91,7 +96,7 @@ class classifier:
 				else:
 					boundary[i][j] = 3
 
-
+		print('Completed MED3')
 		return [boundary, x_grid, y_grid]
 
 		
