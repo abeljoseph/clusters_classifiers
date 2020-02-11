@@ -203,10 +203,10 @@ class classifier:
 		num_steps = 100
 
 		# Create Mesh grid
-		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1,
-							 num_steps)
-		y_grid = np.linspace(min(*a.cluster[:, 1], *b.cluster[:, 1]) - 1, max(*a.cluster[:, 1], *b.cluster[:, 1]) + 1,
-							 num_steps)
+		x_grid = np.linspace(min(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) - 1,
+							 max(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) + 1, num_steps)
+		y_grid = np.linspace(min(*c.cluster[:, 1], *d.cluster[:, 1], *e.cluster[:, 1]) - 1,
+							 max(*c.cluster[:, 1], *d.cluster[:, 1], *e.cluster[:, 1]) + 1, num_steps)
 
 		x0, y0 = np.meshgrid(x_grid, y_grid)
 		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
@@ -294,10 +294,10 @@ class classifier:
 		num_steps = 100
 
 		# Create Mesh grid
-		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1,
-							 num_steps)
-		y_grid = np.linspace(min(*a.cluster[:, 1], *b.cluster[:, 1]) - 1, max(*a.cluster[:, 1], *b.cluster[:, 1]) + 1,
-							 num_steps)
+		x_grid = np.linspace(min(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) - 1,
+							 max(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) + 1, num_steps)
+		y_grid = np.linspace(min(*c.cluster[:, 1], *d.cluster[:, 1], *e.cluster[:, 1]) - 1,
+							 max(*c.cluster[:, 1], *d.cluster[:, 1], *e.cluster[:, 1]) + 1, num_steps)
 
 		x0, y0 = np.meshgrid(x_grid, y_grid)
 		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
@@ -342,6 +342,38 @@ class classifier:
 
 		print('... completed.')
 		return [boundary, x_grid, y_grid]
+
+	@staticmethod
+	def create_map2(a, b):
+		print('Calculating MAP2...', end=" ")
+		num_steps = 100
+		# Create Mesh grid
+		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1,
+							 num_steps)
+		y_grid = np.linspace(min(*a.cluster[:, 1], *b.cluster[:, 1]) - 1, max(*a.cluster[:, 1], *b.cluster[:, 1]) + 1,
+							 num_steps)
+
+		x0, y0 = np.meshgrid(x_grid, y_grid)
+		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
+
+		# TODO: implement
+
+
+	@staticmethod
+	def create_map3(c, d, e):
+		print('Calculating MAP3...', end=" ")
+		num_steps = 100
+
+		# Create Mesh grid
+		x_grid = np.linspace(min(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) - 1,
+							 max(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) + 1, num_steps)
+		y_grid = np.linspace(min(*c.cluster[:, 1], *d.cluster[:, 1], *e.cluster[:, 1]) - 1,
+							 max(*c.cluster[:, 1], *d.cluster[:, 1], *e.cluster[:, 1]) + 1, num_steps)
+
+		x0, y0 = np.meshgrid(x_grid, y_grid)
+		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
+
+		# TODO: implement
 
 
 if __name__ == "__main__":
