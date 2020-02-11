@@ -136,18 +136,17 @@ class classifier:
 
 		x, y = np.meshgrid(x_grid, y_grid)
 
-		inverse_c = np.linalg.inv(c.covariance)
-		inverse_d = np.linalg.inv(d.covariance)
-		inverse_e = np.linalg.inv(e.covariance)
-
 		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
+
+		def get_dist(obj, coord):
+			return sqrt(np.matmul(np.matmul(np.subtract(coord, obj.mean), np.linalg.inv(obj.covariance)), np.subtract(coord, obj.mean).T))
 
 		for i in range(num_steps):
 			for j in range(num_steps):
 				coord = [x[i][j], y[i][j]]
-				c_dist = sqrt(np.matmul(np.matmul(np.subtract(coord, c.mean), inverse_c), np.subtract(coord, c.mean).T))
-				d_dist = sqrt(np.matmul(np.matmul(np.subtract(coord, d.mean), inverse_d), np.subtract(coord, d.mean).T))
-				e_dist = sqrt(np.matmul(np.matmul(np.subtract(coord, e.mean), inverse_e), np.subtract(coord, e.mean).T))
+				c_dist = get_dist(c, coord)
+				d_dist = get_dist(d, coord)
+				e_dist = get_dist(e, coord)
 
 				if min(c_dist, d_dist, e_dist) == c_dist:
 					boundary[i][j] = 1
