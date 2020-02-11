@@ -14,8 +14,10 @@ class class_:
 		self.eigenvals = []
 		self.eigenvecs = []
 
+
 	def create_normal_distribution(self):
 		return np.random.multivariate_normal(self.mean, self.covariance, size=self.n)
+
 
 	def plot(self, ax):
 		max_index = np.where(self.eigenvals == max(self.eigenvals))[0][0]
@@ -243,6 +245,48 @@ class classifier:
 		return [boundary, x_grid, y_grid]
 
 
+	@staticmethod
+	def create_knn2(a, b):
+		print('Calculating KNN2...')
+		num_steps = 100
+
+		# Create Mesh grid
+		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1, num_steps)
+		y_grid = np.linspace(min(*a.cluster[:, 1], *b.cluster[:, 1]) - 1, max(*a.cluster[:, 1], *b.cluster[:, 1]) + 1, num_steps)
+
+		x0, y0 = np.meshgrid(x_grid, y_grid)
+		boundary=[[0 for _ in range(len(x_grid))]for _ in range(len(y_grid))]
+
+		for i in range(num_steps):
+			for j in range(num_steps):
+				# Find nearest neighbours
+				a_group = [float('inf') for _ in range(4)]
+
+				for coord in a.cluster:
+					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
+					if temp_dist < max(a_group):
+						a_group[a_group.index(max(a_group))] = temp_dist
+				
+				a_dist = np.mean(a_group)
+
+				b_group = [float('inf') for _ in range(4)]
+				for coord in b.cluster:
+					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
+					if temp_dist < max(b_group):
+						b_group[b_group.index(max(b_group))] = temp_dist
+				
+				b_dist = np.mean(b_group)
+
+				boundary[i][j] = a_dist - b_dist
+
+				# Print progress
+				sys.stdout.write('\r')
+				sys.stdout.write('{0:6.2f}% of {1:3}/{2:3}'.format((j+1)/num_steps*100, i+1, num_steps))
+
+		print('... completed.')
+		return [boundary, x_grid, y_grid]
+
+
 if __name__ == "__main__":
 	# Instantiate classes
 	a = class_(n=200, mean=[5, 10], covariance=[[8, 0], [0, 4]])
@@ -302,6 +346,9 @@ if __name__ == "__main__":
 	# Determine NN classifiers
 	NN_ab, nn_ab_x, nn_ab_y = classifier.create_nn2(a, b)
 	NN_cde, nn_cde_x, nn_cde_y = classifier.create_nn3(c, d, e)
+	
+	# Determine KNN classifiers
+	KNN_ab, knn_ab_x, knn_ab_y = classifier.create_knn2(a,b)
 
 	# Create scatters and set appearance for NN, and 5NN
 	fig2, axs2 = plt.subplots(1, 2, figsize=(20, 10), subplot_kw={'aspect': 1})
@@ -317,7 +364,8 @@ if __name__ == "__main__":
 	b.plot(axs2[0])
 
 	# Plot Classifiers
-	axs2[0].contour(nn_ab_x, nn_ab_y, NN_ab, levels=[0], colors="red")	
+	axs2[0].contour(nn_ab_x, nn_ab_y, NN_ab, levels=[0], colors="red")
+	axs2[0].contour(knn_ab_x, knn_ab_y, KNN_ab, levels=[0], colors="black")
 	axs2[0].legend(["Class A", "Class B"])
 
 	# Plot C, D, E
