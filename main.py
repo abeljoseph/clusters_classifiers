@@ -146,16 +146,26 @@ class classifier:
 		x, y = np.meshgrid(x_grid, y_grid)
 
 		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
+		ged2_cm_boundary =[0 for _ in range(len(a.cluster) + len(b.cluster))]
 
 		for i in range(num_steps):
 			for j in range(num_steps):
 				coord = [x[i][j], y[i][j]]
-				subtract_1 = classifier.get_micd_dist(a, coord)
-				subtract_2 = classifier.get_micd_dist(b, coord)
-				boundary[i][j] = (subtract_1 - subtract_2)
+				a_dist = classifier.get_micd_dist(a, coord)
+				b_dist = classifier.get_micd_dist(b, coord)
+				boundary[i][j] = (a_dist - b_dist)
+		
+		points_ab = np.concatenate([a.cluster, b.cluster])
+		for i,point in enumerate(points_ab):
+			a_dist = classifier.get_micd_dist(a, point)
+			b_dist = classifier.get_micd_dist(b, point)
 
+			if min(a_dist, b_dist) == a_dist:
+				ged2_cm_boundary[i] = 1
+			else:
+				ged2_cm_boundary[i] = 2
 		print('completed.')
-		return [boundary, x_grid, y_grid]
+		return [boundary, ged2_cm_boundary, x_grid, y_grid]
 
 	@staticmethod
 	def create_ged3(c, d, e):
@@ -170,6 +180,7 @@ class classifier:
 		x, y = np.meshgrid(x_grid, y_grid)
 
 		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
+		ged3_cm_boundary = [0 for _ in range(len(c.cluster) + len(d.cluster) + len(e.cluster))]
 
 		for i in range(num_steps):
 			for j in range(num_steps):
@@ -185,8 +196,21 @@ class classifier:
 				else:
 					boundary[i][j] = 3
 
+		points_cde = np.concatenate([c.cluster, d.cluster, e.cluster])
+		for i,point in enumerate(points_cde):
+			c_dist = classifier.get_micd_dist(c, point)
+			d_dist = classifier.get_micd_dist(d, point)
+			e_dist = classifier.get_micd_dist(e, point)
+
+			if min(c_dist, d_dist, e_dist) == c_dist:
+				ged3_cm_boundary[i] = 1
+			elif min(c_dist, d_dist, e_dist) == d_dist:
+				ged3_cm_boundary[i] = 2
+			else:
+				ged3_cm_boundary[i] = 3
+
 		print('completed.')
-		return [boundary, x_grid, y_grid]
+		return [boundary, ged3_cm_boundary, x_grid, y_grid]
 
 	@staticmethod
 	def create_nn2(a, b):
@@ -420,8 +444,8 @@ if __name__ == "__main__":
 	MED_cde, med3_cm_boundary, med_cde_x, med_cde_y = classifier.create_med3(c, d, e)
 
 	# Determine GED classifiers
-	GED_ab, ged_ab_x, ged_ab_y = classifier.create_ged2(a, b)
-	GED_cde, ged_cde_x, ged_cde_y = classifier.create_ged3(c, d, e)
+	GED_ab, ged2_cm_boundary, ged_ab_x, ged_ab_y = classifier.create_ged2(a, b)
+	GED_cde, ged3_cm_boundary, ged_cde_x, ged_cde_y = classifier.create_ged3(c, d, e)
 
 	# Create scatters and set appearance for MED, GED, and MAP
 	fig1, axs1 = plt.subplots(1, 2, figsize=(20, 10), subplot_kw={'aspect': 1})
@@ -520,3 +544,19 @@ if __name__ == "__main__":
 	#Calculate Error Rate for MED3
 	med3_error_rate = 1 - (accuracy_score(points_cde, med3_cm_boundary, normalize=True)) #error rate = 1 - accuracy score
 	print("Error Rate MED3 = {}".format(med3_error_rate))
+
+	#Confusion Matrix for GED2
+	c_matrix_ged2 = confusion_matrix(points_ab, ged2_cm_boundary)
+	print("Confusion Matrix GED2: \n {}".format(c_matrix_ged2))
+
+	#Calculate Error Rate for GED2
+	ged2_error_rate = 1 - (accuracy_score(points_ab, ged2_cm_boundary, normalize=True)) #error rate = 1 - accuracy score
+	print("Error Rate GED2 = {}".format(ged2_error_rate))
+
+	#Confusion Matrix for GED3
+	c_matrix_ged3 = confusion_matrix(points_cde, ged3_cm_boundary)
+	print("Confusion Matrix GED3: \n {}".format(c_matrix_ged3))
+
+	#Calculate Error Rate for GED3
+	ged3_error_rate = 1 - (accuracy_score(points_cde, ged3_cm_boundary, normalize=True)) #error rate = 1 - accuracy score
+	print("Error Rate GED3 = {}".format(ged3_error_rate))
