@@ -240,3 +240,4 @@ if __name__ == "__main__":
 	axs[1].legend(["Class C", "Class D", "Class E"])
 
 	plt.show()
+	
