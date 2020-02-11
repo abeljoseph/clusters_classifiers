@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
 
 from math import pi, sqrt
 
@@ -13,9 +14,11 @@ class class_:
 		self.eigenvals = []
 		self.eigenvecs = []
 
+
 	@staticmethod
 	def create_normal_distribution(size, mean, std_dev):
 		return np.random.multivariate_normal(mean, std_dev, size=size)
+
 
 	def plot(self, ax):
 		max_index = np.where(self.eigenvals == max(self.eigenvals))[0][0]
@@ -45,10 +48,12 @@ class classifier:
 	def get_micd_dist(obj, coord):
 		return sqrt(np.matmul(np.matmul(np.subtract(coord, obj.mean), np.linalg.inv(obj.covariance)), np.subtract(coord, obj.mean).T))
 
+
 	@staticmethod
 	def get_euclidean_dist(px1, py1, x0, y0, i, j):
 		return sqrt((x0[i][j] - px1)**2 + (y0[i][j] - py1)**2)
 			
+
 	@staticmethod
 	def create_med2(a, b):
 		print('Calculating MED2...', end =" ")
@@ -71,27 +76,6 @@ class classifier:
 		print('completed.')
 		return [boundary, x_grid, y_grid]
 
-	@staticmethod
-	def create_ged2(a, b):
-		print('Calculating GED2...', end =" ")
-		num_steps = 500
-
-		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1, num_steps)
-		y_grid = np.linspace(min(*a.cluster[:, 1], *b.cluster[:, 1]) - 1, max(*a.cluster[:, 1], *b.cluster[:, 1]) + 1, num_steps)
-
-		x, y = np.meshgrid(x_grid, y_grid)
-
-		boundary=[[0 for _ in range(len(x_grid))]for _ in range(len(y_grid))]
-
-		for i in range(num_steps):
-			for j in range(num_steps):
-				coord = [x[i][j], y[i][j]]
-				subtract_1 = classifier.get_micd_dist(a, coord)
-				subtract_2 = classifier.get_micd_dist(b, coord)
-				boundary[i][j] =  (subtract_1 - subtract_2)
-
-		print('completed.')
-		return [boundary, x_grid, y_grid]
 
 	@staticmethod
 	def create_med3(c, d, e):
@@ -118,8 +102,32 @@ class classifier:
 				else:
 					boundary[i][j] = 3
 
-		print('completed')
+		print('completed.')
 		return [boundary, x_grid, y_grid]
+
+
+	@staticmethod
+	def create_ged2(a, b):
+		print('Calculating GED2...', end =" ")
+		num_steps = 500
+
+		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1, num_steps)
+		y_grid = np.linspace(min(*a.cluster[:, 1], *b.cluster[:, 1]) - 1, max(*a.cluster[:, 1], *b.cluster[:, 1]) + 1, num_steps)
+
+		x, y = np.meshgrid(x_grid, y_grid)
+
+		boundary=[[0 for _ in range(len(x_grid))]for _ in range(len(y_grid))]
+
+		for i in range(num_steps):
+			for j in range(num_steps):
+				coord = [x[i][j], y[i][j]]
+				subtract_1 = classifier.get_micd_dist(a, coord)
+				subtract_2 = classifier.get_micd_dist(b, coord)
+				boundary[i][j] =  (subtract_1 - subtract_2)
+
+		print('completed.')
+		return [boundary, x_grid, y_grid]
+
 
 	@staticmethod
 	def create_ged3(c, d, e):
@@ -149,7 +157,44 @@ class classifier:
 				else:
 					boundary[i][j] = 3
 
-		print('completed')
+		print('completed.')
+		return [boundary, x_grid, y_grid]
+
+	
+	@staticmethod
+	def create_nn2(a, b):
+		print('Calculating NN2...')
+		num_steps = 100
+
+		# Create Mesh grid
+		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1, num_steps)
+		y_grid = np.linspace(min(*a.cluster[:, 1], *b.cluster[:, 1]) - 1, max(*a.cluster[:, 1], *b.cluster[:, 1]) + 1, num_steps)
+
+		x0, y0 = np.meshgrid(x_grid, y_grid)
+		boundary=[[0 for _ in range(len(x_grid))]for _ in range(len(y_grid))]
+
+		for i in range(num_steps):
+			for j in range(num_steps):
+				# Find nearest neighbours
+				a_dist = float('inf')
+				for coord in a.cluster:
+					temp_dist = a_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
+					if temp_dist < a_dist:
+						a_dist = temp_dist
+
+				b_dist = float('inf')
+				for coord in b.cluster:
+					temp_dist = b_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
+					if temp_dist < b_dist:
+						b_dist = temp_dist
+				
+				boundary[i][j] = a_dist - b_dist
+
+				# Print progress
+				sys.stdout.write('\r')
+				sys.stdout.write('{0:6.2f}% of {1:3}/{2:3}'.format((j+1)/num_steps*100, i+1, num_steps))
+
+		print('... completed.')
 		return [boundary, x_grid, y_grid]
 
 
@@ -172,68 +217,70 @@ if __name__ == "__main__":
 		cla.eigenvals, cla.eigenvecs = np.linalg.eig(cla.covariance)
 
 	# Determine MED classifiers
-	MED_ab, x_grid, y_grid = classifier.create_med2(a, b)
-	MED_cde, x_grid1, y_grid1 = classifier.create_med3(c, d, e)
+	MED_ab, med_ab_x, med_ab_y = classifier.create_med2(a, b)
+	MED_cde, med_cde_x, med_cde_y = classifier.create_med3(c, d, e)
 
 	# Determine GED classifiers
-	GED_ab, ged_x, ged_y = classifier.create_ged2(a, b)
-	GED_cde, ged_x1, ged_y1 = classifier.create_ged3(c, d, e)
+	GED_ab, ged_ab_x, ged_ab_y = classifier.create_ged2(a, b)
+	GED_cde, ged_cde_x, ged_cde_y = classifier.create_ged3(c, d, e)
 
-	# Create scatters and set appearance
-	fig, axs = plt.subplots(1, 2, figsize=(20, 10), subplot_kw={'aspect': 1})
+	# Create scatters and set appearance for MED, GED, and MAP
+	fig1, axs1 = plt.subplots(1, 2, figsize=(20, 10), subplot_kw={'aspect': 1})
 	
-	for ax in axs:
+	for ax in axs1:
 		ax.set(xlabel='Feature 1', ylabel='Feature 2')
 		ax.set_aspect('equal')
 		ax.grid()
 	
 	# Plot A and B
-	axs[0].set_title("MED - Feature 2 vs. Feature 1 for classes A and B")
-	a.plot(axs[0])
-	b.plot(axs[0])
+	axs1[0].set_title("Feature 2 vs. Feature 1 for classes A and B")
+	a.plot(axs1[0])
+	b.plot(axs1[0])
 
 	# Plot Classifiers
-	axs[0].contour(x_grid, y_grid, MED_ab, levels=[0], colors="black")
-	axs[0].legend(["Class A", "Class B"])
+	axs1[0].contour(med_ab_x, med_ab_y, MED_ab, levels=[0], colors="black")
+	axs1[0].contour(ged_ab_x, ged_ab_y, GED_ab, levels=[0], colors="red")
+	axs1[0].legend(["Class A", "Class B"])
 
 	# Plot C, D, E
-	axs[1].set_title("MED - Feature 2 vs. Feature 1 for classes C, D and E")
-	c.plot(axs[1])
-	d.plot(axs[1])
-	e.plot(axs[1])
+	axs1[1].set_title("Feature 2 vs. Feature 1 for classes C, D and E")
+	c.plot(axs1[1])
+	d.plot(axs1[1])
+	e.plot(axs1[1])
 
 	# Plot Classifiers
-	axs[1].contour(x_grid1, y_grid1, MED_cde, colors="black")
-	axs[1].legend(["Class C", "Class D", "Class E"])
+	axs1[1].contour(med_cde_x, med_cde_y, MED_cde, colors="black")
+	axs1[1].contour(ged_cde_x, ged_cde_y, GED_cde, colors="red")
+	axs1[1].legend(["Class C", "Class D", "Class E"])
 
-	plt.show()
 
-	# GED Plots
-	fig, axs = plt.subplots(1, 2, figsize=(20, 10), subplot_kw={'aspect': 1})
+	# Determine NN classifiers
+	NN_ab, nn_ab_x, nn_ab_y = classifier.create_nn2(a, b)
 
-	for ax in axs:
+	# Create scatters and set appearance for NN, and 5NN
+	fig2, axs2 = plt.subplots(1, 2, figsize=(20, 10), subplot_kw={'aspect': 1})
+
+	for ax in axs2:
 		ax.set(xlabel='Feature 1', ylabel='Feature 2')
 		ax.set_aspect('equal')
 		ax.grid()
 
 	# Plot A and B
-	axs[0].set_title("GED - Feature 2 vs. Feature 1 for classes A and B")
-	a.plot(axs[0])
-	b.plot(axs[0])
+	axs2[0].set_title("Feature 2 vs. Feature 1 for classes A and B")
+	a.plot(axs2[0])
+	b.plot(axs2[0])
 
 	# Plot Classifiers
-	axs[0].contour(ged_x, ged_y, GED_ab, levels=[0], colors="black")
-	axs[0].legend(["Class A", "Class B"])
+	axs2[0].contour(nn_ab_x, nn_ab_y, NN_ab, levels=[0], colors="red")	
+	axs2[0].legend(["Class A", "Class B"])
 
 	# Plot C, D, E
-	axs[1].set_title("GED - Feature 2 vs. Feature 1 for classes C, D and E")
-	c.plot(axs[1])
-	d.plot(axs[1])
-	e.plot(axs[1])
+	axs2[1].set_title("Feature 2 vs. Feature 1 for classes C, D and E")
+	c.plot(axs2[1])
+	d.plot(axs2[1])
+	e.plot(axs2[1])
 
 	# Plot Classifiers
-	axs[1].contour(ged_x1, ged_y1, GED_cde, colors="black")
-	axs[1].legend(["Class C", "Class D", "Class E"])
+	axs2[1].legend(["Class C", "Class D", "Class E"])
 
 	plt.show()
-	
