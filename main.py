@@ -14,10 +14,8 @@ class class_:
 		self.eigenvals = []
 		self.eigenvecs = []
 
-
 	def create_normal_distribution(self):
 		return np.random.multivariate_normal(self.mean, self.covariance, size=self.n)
-
 
 	def plot(self, ax):
 		max_index = np.where(self.eigenvals == max(self.eigenvals))[0][0]
@@ -45,48 +43,50 @@ class class_:
 class classifier:
 	@staticmethod
 	def get_micd_dist(obj, coord):
-		return sqrt(np.matmul(np.matmul(np.subtract(coord, obj.mean), np.linalg.inv(obj.covariance)), np.subtract(coord, obj.mean).T))
-
+		return sqrt(np.matmul(np.matmul(np.subtract(coord, obj.mean), np.linalg.inv(obj.covariance)),
+							  np.subtract(coord, obj.mean).T))
 
 	@staticmethod
 	def get_euclidean_dist(px1, py1, x0, y0, i, j):
-		return sqrt((x0[i][j] - px1)**2 + (y0[i][j] - py1)**2)
-			
+		return sqrt((x0[i][j] - px1) ** 2 + (y0[i][j] - py1) ** 2)
 
 	@staticmethod
 	def create_med2(a, b):
-		print('Calculating MED2...', end =" ")
+		print('Calculating MED2...', end=" ")
 		num_steps = 500
 
 		# Create Mesh grid
-		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1, num_steps)
-		y_grid = np.linspace(min(*a.cluster[:, 1], *b.cluster[:, 1]) - 1, max(*a.cluster[:, 1], *b.cluster[:, 1]) + 1, num_steps)
+		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1,
+							 num_steps)
+		y_grid = np.linspace(min(*a.cluster[:, 1], *b.cluster[:, 1]) - 1, max(*a.cluster[:, 1], *b.cluster[:, 1]) + 1,
+							 num_steps)
 
 		x0, y0 = np.meshgrid(x_grid, y_grid)
-		boundary=[[0 for _ in range(len(x_grid))]for _ in range(len(y_grid))]
+		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
 
 		for i in range(num_steps):
 			for j in range(num_steps):
 				a_dist = classifier.get_euclidean_dist(a.mean[0], a.mean[1], x0, y0, i, j)
 				b_dist = classifier.get_euclidean_dist(b.mean[0], b.mean[1], x0, y0, i, j)
-				
+
 				boundary[i][j] = a_dist - b_dist
 
 		print('completed.')
 		return [boundary, x_grid, y_grid]
 
-
 	@staticmethod
 	def create_med3(c, d, e):
-		print('Calculating MED3...', end =" ")
+		print('Calculating MED3...', end=" ")
 		num_steps = 500
 
 		# Create Mesh grid
-		x_grid = np.linspace(min(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) - 1, max(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) + 1, num_steps)
-		y_grid = np.linspace(min(*c.cluster[:, 1], *d.cluster[:, 1], *e.cluster[:, 1]) - 1, max(*c.cluster[:, 1], *d.cluster[:, 1], *e.cluster[:, 1]) + 1, num_steps)
+		x_grid = np.linspace(min(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) - 1,
+							 max(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) + 1, num_steps)
+		y_grid = np.linspace(min(*c.cluster[:, 1], *d.cluster[:, 1], *e.cluster[:, 1]) - 1,
+							 max(*c.cluster[:, 1], *d.cluster[:, 1], *e.cluster[:, 1]) + 1, num_steps)
 
 		x0, y0 = np.meshgrid(x_grid, y_grid)
-		boundary=[[0 for _ in range(len(x_grid))]for _ in range(len(y_grid))]
+		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
 
 		for i in range(num_steps):
 			for j in range(num_steps):
@@ -104,33 +104,33 @@ class classifier:
 		print('completed.')
 		return [boundary, x_grid, y_grid]
 
-
 	@staticmethod
 	def create_ged2(a, b):
-		print('Calculating GED2...', end =" ")
+		print('Calculating GED2...', end=" ")
 		num_steps = 500
 
-		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1, num_steps)
-		y_grid = np.linspace(min(*a.cluster[:, 1], *b.cluster[:, 1]) - 1, max(*a.cluster[:, 1], *b.cluster[:, 1]) + 1, num_steps)
+		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1,
+							 num_steps)
+		y_grid = np.linspace(min(*a.cluster[:, 1], *b.cluster[:, 1]) - 1, max(*a.cluster[:, 1], *b.cluster[:, 1]) + 1,
+							 num_steps)
 
 		x, y = np.meshgrid(x_grid, y_grid)
 
-		boundary=[[0 for _ in range(len(x_grid))]for _ in range(len(y_grid))]
+		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
 
 		for i in range(num_steps):
 			for j in range(num_steps):
 				coord = [x[i][j], y[i][j]]
 				subtract_1 = classifier.get_micd_dist(a, coord)
 				subtract_2 = classifier.get_micd_dist(b, coord)
-				boundary[i][j] =  (subtract_1 - subtract_2)
+				boundary[i][j] = (subtract_1 - subtract_2)
 
 		print('completed.')
 		return [boundary, x_grid, y_grid]
 
-
 	@staticmethod
 	def create_ged3(c, d, e):
-		print('Calculating GED3...', end =" ")
+		print('Calculating GED3...', end=" ")
 		num_steps = 500
 
 		x_grid = np.linspace(min(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) - 1,
@@ -159,18 +159,19 @@ class classifier:
 		print('completed.')
 		return [boundary, x_grid, y_grid]
 
-	
 	@staticmethod
 	def create_nn2(a, b):
 		print('Calculating NN2...')
 		num_steps = 100
 
 		# Create Mesh grid
-		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1, num_steps)
-		y_grid = np.linspace(min(*a.cluster[:, 1], *b.cluster[:, 1]) - 1, max(*a.cluster[:, 1], *b.cluster[:, 1]) + 1, num_steps)
+		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1,
+							 num_steps)
+		y_grid = np.linspace(min(*a.cluster[:, 1], *b.cluster[:, 1]) - 1, max(*a.cluster[:, 1], *b.cluster[:, 1]) + 1,
+							 num_steps)
 
 		x0, y0 = np.meshgrid(x_grid, y_grid)
-		boundary=[[0 for _ in range(len(x_grid))]for _ in range(len(y_grid))]
+		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
 
 		for i in range(num_steps):
 			for j in range(num_steps):
@@ -186,28 +187,29 @@ class classifier:
 					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
 					if temp_dist < b_dist:
 						b_dist = temp_dist
-				
+
 				boundary[i][j] = a_dist - b_dist
 
 				# Print progress
 				sys.stdout.write('\r')
-				sys.stdout.write('{0:6.2f}% of {1:3}/{2:3}'.format((j+1)/num_steps*100, i+1, num_steps))
+				sys.stdout.write('{0:6.2f}% of {1:3}/{2:3}'.format((j + 1) / num_steps * 100, i + 1, num_steps))
 
 		print('... completed.')
 		return [boundary, x_grid, y_grid]
 
-	
 	@staticmethod
 	def create_nn3(c, d, e):
 		print('Calculating NN3...')
 		num_steps = 100
 
 		# Create Mesh grid
-		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1, num_steps)
-		y_grid = np.linspace(min(*a.cluster[:, 1], *b.cluster[:, 1]) - 1, max(*a.cluster[:, 1], *b.cluster[:, 1]) + 1, num_steps)
+		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1,
+							 num_steps)
+		y_grid = np.linspace(min(*a.cluster[:, 1], *b.cluster[:, 1]) - 1, max(*a.cluster[:, 1], *b.cluster[:, 1]) + 1,
+							 num_steps)
 
 		x0, y0 = np.meshgrid(x_grid, y_grid)
-		boundary=[[0 for _ in range(len(x_grid))]for _ in range(len(y_grid))]
+		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
 
 		for i in range(num_steps):
 			for j in range(num_steps):
@@ -223,7 +225,7 @@ class classifier:
 					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
 					if temp_dist < d_dist:
 						d_dist = temp_dist
-				
+
 				e_dist = float('inf')
 				for coord in e.cluster:
 					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
@@ -239,11 +241,10 @@ class classifier:
 
 				# Print progress
 				sys.stdout.write('\r')
-				sys.stdout.write('{0:6.2f}% of {1:3}/{2:3}'.format((j+1)/num_steps*100, i+1, num_steps))
+				sys.stdout.write('{0:6.2f}% of {1:3}/{2:3}'.format((j + 1) / num_steps * 100, i + 1, num_steps))
 
 		print('... completed.')
 		return [boundary, x_grid, y_grid]
-
 
 	@staticmethod
 	def create_knn2(a, b):
@@ -251,11 +252,13 @@ class classifier:
 		num_steps = 100
 
 		# Create Mesh grid
-		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1, num_steps)
-		y_grid = np.linspace(min(*a.cluster[:, 1], *b.cluster[:, 1]) - 1, max(*a.cluster[:, 1], *b.cluster[:, 1]) + 1, num_steps)
+		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1,
+							 num_steps)
+		y_grid = np.linspace(min(*a.cluster[:, 1], *b.cluster[:, 1]) - 1, max(*a.cluster[:, 1], *b.cluster[:, 1]) + 1,
+							 num_steps)
 
 		x0, y0 = np.meshgrid(x_grid, y_grid)
-		boundary=[[0 for _ in range(len(x_grid))]for _ in range(len(y_grid))]
+		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
 
 		for i in range(num_steps):
 			for j in range(num_steps):
@@ -265,7 +268,7 @@ class classifier:
 					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
 					if temp_dist < max(a_group):
 						a_group[a_group.index(max(a_group))] = temp_dist
-				
+
 				a_dist = np.mean(a_group)
 
 				b_group = [float('inf') for _ in range(4)]
@@ -273,18 +276,17 @@ class classifier:
 					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
 					if temp_dist < max(b_group):
 						b_group[b_group.index(max(b_group))] = temp_dist
-				
+
 				b_dist = np.mean(b_group)
 
 				boundary[i][j] = a_dist - b_dist
 
 				# Print progress
 				sys.stdout.write('\r')
-				sys.stdout.write('{0:6.2f}% of {1:3}/{2:3}'.format((j+1)/num_steps*100, i+1, num_steps))
+				sys.stdout.write('{0:6.2f}% of {1:3}/{2:3}'.format((j + 1) / num_steps * 100, i + 1, num_steps))
 
 		print('... completed.')
 		return [boundary, x_grid, y_grid]
-
 
 	@staticmethod
 	def create_knn3(c, d, e):
@@ -292,11 +294,13 @@ class classifier:
 		num_steps = 100
 
 		# Create Mesh grid
-		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1, num_steps)
-		y_grid = np.linspace(min(*a.cluster[:, 1], *b.cluster[:, 1]) - 1, max(*a.cluster[:, 1], *b.cluster[:, 1]) + 1, num_steps)
+		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1,
+							 num_steps)
+		y_grid = np.linspace(min(*a.cluster[:, 1], *b.cluster[:, 1]) - 1, max(*a.cluster[:, 1], *b.cluster[:, 1]) + 1,
+							 num_steps)
 
 		x0, y0 = np.meshgrid(x_grid, y_grid)
-		boundary=[[0 for _ in range(len(x_grid))]for _ in range(len(y_grid))]
+		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
 
 		for i in range(num_steps):
 			for j in range(num_steps):
@@ -306,7 +310,7 @@ class classifier:
 					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
 					if temp_dist < max(c_group):
 						c_group[c_group.index(max(c_group))] = temp_dist
-				
+
 				c_dist = np.mean(c_group)
 
 				d_group = [float('inf') for _ in range(4)]
@@ -314,7 +318,7 @@ class classifier:
 					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
 					if temp_dist < max(d_group):
 						d_group[d_group.index(max(d_group))] = temp_dist
-				
+
 				d_dist = np.mean(d_group)
 
 				e_group = [float('inf') for _ in range(4)]
@@ -322,7 +326,7 @@ class classifier:
 					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
 					if temp_dist < max(e_group):
 						e_group[e_group.index(max(e_group))] = temp_dist
-				
+
 				e_dist = np.mean(e_group)
 
 				if min(c_dist, d_dist, e_dist) == c_dist:
@@ -334,7 +338,7 @@ class classifier:
 
 				# Print progress
 				sys.stdout.write('\r')
-				sys.stdout.write('{0:6.2f}% of {1:3}/{2:3}'.format((j+1)/num_steps*100, i+1, num_steps))
+				sys.stdout.write('{0:6.2f}% of {1:3}/{2:3}'.format((j + 1) / num_steps * 100, i + 1, num_steps))
 
 		print('... completed.')
 		return [boundary, x_grid, y_grid]
@@ -368,12 +372,12 @@ if __name__ == "__main__":
 
 	# Create scatters and set appearance for MED, GED, and MAP
 	fig1, axs1 = plt.subplots(1, 2, figsize=(20, 10), subplot_kw={'aspect': 1})
-	
+
 	for ax in axs1:
 		ax.set(xlabel='Feature 1', ylabel='Feature 2')
 		ax.set_aspect('equal')
 		ax.grid()
-	
+
 	# Plot A and B
 	axs1[0].set_title("Feature 2 vs. Feature 1 for classes A and B")
 	a.plot(axs1[0])
@@ -395,13 +399,12 @@ if __name__ == "__main__":
 	axs1[1].contour(ged_cde_x, ged_cde_y, GED_cde, colors="red")
 	axs1[1].legend(["Class C", "Class D", "Class E"])
 
-
 	# Determine NN classifiers
 	NN_ab, nn_ab_x, nn_ab_y = classifier.create_nn2(a, b)
 	NN_cde, nn_cde_x, nn_cde_y = classifier.create_nn3(c, d, e)
-	
+
 	# Determine KNN classifiers
-	KNN_ab, knn_ab_x, knn_ab_y = classifier.create_knn2(a,b)
+	KNN_ab, knn_ab_x, knn_ab_y = classifier.create_knn2(a, b)
 	KNN_cde, knn_cde_x, knn_cde_y = classifier.create_knn3(c, d, e)
 
 	# Create scatters and set appearance for NN, and 5NN
