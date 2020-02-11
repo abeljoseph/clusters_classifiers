@@ -43,7 +43,7 @@ class class_:
 class classifiers:
 	@staticmethod
 	def med2(a, b):
-		num_steps = 100
+		num_steps = 500
 
 		# Create Mesh grid
 		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1, num_steps)
@@ -64,7 +64,7 @@ class classifiers:
 
 	@staticmethod
 	def ged2(a, b):
-		num_steps = 100
+		num_steps = 500
 
 		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1, num_steps)
 		y_grid = np.linspace(min(*a.cluster[:, 1], *b.cluster[:, 1]) - 1, max(*a.cluster[:, 1], *b.cluster[:, 1]) + 1, num_steps)
@@ -86,11 +86,9 @@ class classifiers:
 		return [boundary, x_grid, y_grid]
 
 
-
-
 	@staticmethod
 	def med3(c, d, e):
-		num_steps = 100
+		num_steps = 500
 
 		# Create Mesh grid
 		x_grid = np.linspace(min(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) - 1, max(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) + 1, num_steps)
@@ -112,6 +110,40 @@ class classifiers:
 				else:
 					boundary[i][j] = 3
 
+
+		return [boundary, x_grid, y_grid]
+
+
+	@staticmethod
+	def ged3(c, d, e):
+		num_steps = 500
+
+		x_grid = np.linspace(min(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) - 1,
+							 max(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) + 1, num_steps)
+		y_grid = np.linspace(min(*c.cluster[:, 1], *d.cluster[:, 1], *e.cluster[:, 1]) - 1,
+							 max(*c.cluster[:, 1], *d.cluster[:, 1], *e.cluster[:, 1]) + 1, num_steps)
+
+		x, y = np.meshgrid(x_grid, y_grid)
+
+		inverse_c = np.linalg.inv(c.covariance)
+		inverse_d = np.linalg.inv(d.covariance)
+		inverse_e = np.linalg.inv(e.covariance)
+
+		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
+
+		for i in range(num_steps):
+			for j in range(num_steps):
+				coord = [x[i][j], y[i][j]]
+				c_dist = sqrt(np.matmul(np.matmul(np.subtract(coord, c.mean), inverse_c), np.subtract(coord, c.mean).T))
+				d_dist = sqrt(np.matmul(np.matmul(np.subtract(coord, d.mean), inverse_d), np.subtract(coord, d.mean).T))
+				e_dist = sqrt(np.matmul(np.matmul(np.subtract(coord, e.mean), inverse_e), np.subtract(coord, e.mean).T))
+
+				if min(c_dist, d_dist, e_dist) == c_dist:
+					boundary[i][j] = 1
+				elif min(c_dist, d_dist, e_dist) == d_dist:
+					boundary[i][j] = 2
+				else:
+					boundary[i][j] = 3
 
 		return [boundary, x_grid, y_grid]
 
@@ -140,7 +172,8 @@ if __name__ == "__main__":
 	MED_cde, x_grid1, y_grid1 = classifiers.med3(c, d, e)
 
 	# Determine GED classifiers
-	GED_ab, ged_x, ged_y = classifiers.ged2(a,b)
+	GED_ab, ged_x, ged_y = classifiers.ged2(a, b)
+	GED_cde, ged_x1, ged_y1 = classifiers.ged3(c, d, e)
 
 	# Create scatters and set appearance
 	fig, axs = plt.subplots(1, 2, figsize=(20, 10), subplot_kw={'aspect': 1})
@@ -153,7 +186,7 @@ if __name__ == "__main__":
 
 	# MED Plots
 	# Plot A and B
-	axs[0].set_title("Feature 2 vs. Feature 1 for classes A and B")
+	axs[0].set_title("MED - Feature 2 vs. Feature 1 for classes A and B")
 	a.plot(axs[0])
 	b.plot(axs[0])
 
@@ -164,7 +197,7 @@ if __name__ == "__main__":
 
 
 	# Plot C, D, E
-	axs[1].set_title("Feature 2 vs. Feature 1 for classes C, D and E")
+	axs[1].set_title("MED - Feature 2 vs. Feature 1 for classes C, D and E")
 	c.plot(axs[1])
 	d.plot(axs[1])
 	e.plot(axs[1])
@@ -184,22 +217,22 @@ if __name__ == "__main__":
 		ax.grid()
 
 	# Plot A and B
-	axs[0].set_title("Feature 2 vs. Feature 1 for classes A and B")
+	axs[0].set_title("GED - Feature 2 vs. Feature 1 for classes A and B")
 	a.plot(axs[0])
 	b.plot(axs[0])
 
 	# Plot Classifiers
-	axs[0].contour(x_grid, y_grid, GED_ab, levels=[0], colors="black")
+	axs[0].contour(ged_x, ged_y, GED_ab, levels=[0], colors="black")
 	axs[0].legend(["Class A", "Class B"])
 
 	# Plot C, D, E
-	# axs[1].set_title("Feature 2 vs. Feature 1 for classes C, D and E")
-	# c.plot(axs[1])
-	# d.plot(axs[1])
-	# e.plot(axs[1])
+	axs[1].set_title("GED - Feature 2 vs. Feature 1 for classes C, D and E")
+	c.plot(axs[1])
+	d.plot(axs[1])
+	e.plot(axs[1])
 
 	# Plot Classifiers
-	# axs[1].contour(x_grid1, y_grid1, MED_cde, colors="black")
-	# axs[1].legend(["Class C", "Class D", "Class E"])
+	axs[1].contour(ged_x1, ged_y1, GED_cde, colors="black")
+	axs[1].legend(["Class C", "Class D", "Class E"])
 
 	plt.show()
