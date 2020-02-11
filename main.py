@@ -48,7 +48,7 @@ class classifier:
 			
 	@staticmethod
 	def create_med2(a, b):
-		print('Calculating MED2')
+		print('Calculating MED2...', end =" ")
 		num_steps = 500
 
 		# Create Mesh grid
@@ -65,12 +65,13 @@ class classifier:
 				
 				boundary[i][j] = a_dist - b_dist
 
-		print('Completed MED2')
+		print('completed.')
 		return [boundary, x_grid, y_grid]
 
 
 	@staticmethod
-	def ged2(a, b):
+	def create_ged2(a, b):
+		print('Calculating GED2...', end =" ")
 		num_steps = 500
 
 		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1, num_steps)
@@ -90,12 +91,13 @@ class classifier:
 				subtract_2 = sqrt( np.matmul(np.matmul(np.subtract(coord,b.mean), inverse_b), np.subtract(coord, b.mean).T ) )
 				boundary[i][j] =  (subtract_1 - subtract_2)
 
+		print('completed.')
 		return [boundary, x_grid, y_grid]
 
 
 	@staticmethod
 	def create_med3(c, d, e):
-		print('Calculating MED3')
+		print('Calculating MED3...', end =" ")
 		num_steps = 500
 
 		# Create Mesh grid
@@ -118,12 +120,13 @@ class classifier:
 				else:
 					boundary[i][j] = 3
 
-		print('Completed MED3')
+		print('completed')
 		return [boundary, x_grid, y_grid]
 
 
 	@staticmethod
-	def ged3(c, d, e):
+	def create_ged3(c, d, e):
+		print('Calculating GED3...', end =" ")
 		num_steps = 500
 
 		x_grid = np.linspace(min(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) - 1,
@@ -153,6 +156,7 @@ class classifier:
 				else:
 					boundary[i][j] = 3
 
+		print('completed')
 		return [boundary, x_grid, y_grid]
 
 
@@ -180,8 +184,8 @@ if __name__ == "__main__":
 	MED_cde, x_grid1, y_grid1 = classifier.create_med3(c, d, e)
 
 	# Determine GED classifiers
-	GED_ab, ged_x, ged_y = classifier.ged2(a, b)
-	GED_cde, ged_x1, ged_y1 = classifier.ged3(c, d, e)
+	GED_ab, ged_x, ged_y = classifier.create_ged2(a, b)
+	GED_cde, ged_x1, ged_y1 = classifier.create_ged3(c, d, e)
 
 	# Create scatters and set appearance
 	fig, axs = plt.subplots(1, 2, figsize=(20, 10), subplot_kw={'aspect': 1})
