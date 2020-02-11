@@ -219,9 +219,10 @@ class classifier:
 
 				boundary[i][j] = a_dist - b_dist
 
-				# Print progress
-				sys.stdout.write('\r')
-				sys.stdout.write('{0:6.2f}% of {1:3}/{2:3}'.format((j + 1) / num_steps * 100, i + 1, num_steps))
+			# TODO: change the rest
+			# Print progress
+			sys.stdout.write('\r')
+			sys.stdout.write('Rows: {0:4}/{1:4}'.format(i + 1, num_steps))
 
 		print('... completed.')
 		return [boundary, x_grid, y_grid]
@@ -386,7 +387,6 @@ class classifier:
 		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
 
 		# TODO: implement
-
 
 	@staticmethod
 	def create_map3(c, d, e):
