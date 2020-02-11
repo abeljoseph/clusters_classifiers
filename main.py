@@ -42,8 +42,13 @@ class class_:
 
 class classifier:
 	@staticmethod
+	def getEuclideanDistance(cla, x0, y0, i, j):
+		return sqrt((x0[i][j] - cla.mean[0])**2 + (y0[i][j] - cla.mean[1])**2)
+			
+			
+	@staticmethod
 	def create_med2(a, b):
-		num_steps = 2000
+		num_steps = 1000
 
 		# Create Mesh grid
 		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1, num_steps)
@@ -54,8 +59,8 @@ class classifier:
 
 		for i in range(num_steps):
 			for j in range(num_steps):
-				a_dist = sqrt((x0[i][j] - a.mean[0])**2 + (y0[i][j] - a.mean[1])**2)
-				b_dist = sqrt((x0[i][j] - b.mean[0])**2 + (y0[i][j] - b.mean[1])**2)
+				a_dist = classifier.getEuclideanDistance(a, x0, y0, i, j)
+				b_dist = classifier.getEuclideanDistance(b, x0, y0, i, j)
 				
 				boundary[i][j] = a_dist - b_dist
 
@@ -64,7 +69,7 @@ class classifier:
 	
 	@staticmethod
 	def create_med3(c, d, e):
-		num_steps = 2000
+		num_steps = 1000
 
 		# Create Mesh grid
 		x_grid = np.linspace(min(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) - 1, max(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) + 1, num_steps)
@@ -75,9 +80,9 @@ class classifier:
 
 		for i in range(num_steps):
 			for j in range(num_steps):
-				c_dist = sqrt((x0[i][j] - c.mean[0])**2 + (y0[i][j] - c.mean[1])**2)
-				d_dist = sqrt((x0[i][j] - d.mean[0])**2 + (y0[i][j] - d.mean[1])**2)
-				e_dist = sqrt((x0[i][j] - e.mean[0])**2 + (y0[i][j] - e.mean[1])**2)
+				c_dist = classifier.getEuclideanDistance(c, x0, y0, i, j)
+				d_dist = classifier.getEuclideanDistance(d, x0, y0, i, j)
+				e_dist = classifier.getEuclideanDistance(e, x0, y0, i, j)
 
 				if min(c_dist, d_dist, e_dist) == c_dist:
 					boundary[i][j] = 1
@@ -119,15 +124,15 @@ if __name__ == "__main__":
 		ax.set(xlabel='Feature 1', ylabel='Feature 2')
 		ax.set_aspect('equal')
 		ax.grid()
-		ax.set
 	
 	# Plot A and B
 	axs[0].set_title("Feature 2 vs. Feature 1 for classes A and B")
 	a.plot(axs[0])
 	b.plot(axs[0])
-	# Plot Classifiers
 
+	# Plot Classifiers
 	axs[0].contour(x_grid, y_grid, MED_ab, levels=[0], colors="black")
+	
 	axs[0].legend(["Class A", "Class B"])
 
 	# Plot C, D, E
@@ -135,8 +140,10 @@ if __name__ == "__main__":
 	c.plot(axs[1])
 	d.plot(axs[1])
 	e.plot(axs[1])
+
 	# Plot Classifiers
 	axs[1].contour(x_grid1, y_grid1, MED_cde, colors="black")
-	axs[1].legend(["Class C", "Class D", "Class E", "MED Decision Boundary"])
+	
+	axs[1].legend(["Class C", "Class D", "Class E"])
 
 	plt.show()
