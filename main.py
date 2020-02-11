@@ -14,11 +14,8 @@ class class_:
 		self.eigenvals = []
 		self.eigenvecs = []
 
-
-	@staticmethod
-	def create_normal_distribution(size, mean, std_dev):
-		return np.random.multivariate_normal(mean, std_dev, size=size)
-
+	def create_normal_distribution(self):
+		return np.random.multivariate_normal(self.mean, self.covariance, size=self.n)
 
 	def plot(self, ax):
 		max_index = np.where(self.eigenvals == max(self.eigenvals))[0][0]
@@ -258,7 +255,7 @@ if __name__ == "__main__":
 
 	# Create clusters
 	for cla in class_list:
-		cla.cluster = class_.create_normal_distribution(cla.n, cla.mean, cla.covariance)
+		cla.cluster = cla.create_normal_distribution()
 
 	# Determine eigenvalues
 	for cla in class_list:
