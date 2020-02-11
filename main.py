@@ -1,6 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import accuracy_score
 import sys
+
 
 from math import pi, sqrt
 
@@ -63,6 +66,7 @@ class classifier:
 
 		x0, y0 = np.meshgrid(x_grid, y_grid)
 		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
+		med2_cm_boundary =[0 for _ in range(len(a.cluster) + len(b.cluster))]
 
 		for i in range(num_steps):
 			for j in range(num_steps):
@@ -70,9 +74,20 @@ class classifier:
 				b_dist = classifier.get_euclidean_dist(b.mean[0], b.mean[1], x0, y0, i, j)
 
 				boundary[i][j] = a_dist - b_dist
+		
+		points = np.concatenate([a.cluster, b.cluster])
+		for i in range(len(points)):
+			a_dist = sqrt((points[i][0] - a.mean[0])**2 + (points[i][1] - a.mean[1])**2)
+			b_dist = sqrt((points[i][0] - b.mean[0])**2 + (points[i][1] - b.mean[1])**2)
+
+			if min(a_dist, b_dist) == a_dist:
+				med2_cm_boundary[i] = 1
+			else:
+				med2_cm_boundary[i] = 2
+
 
 		print('completed.')
-		return [boundary, x_grid, y_grid]
+		return [boundary, med2_cm_boundary, x_grid, y_grid]
 
 	@staticmethod
 	def create_med3(c, d, e):
@@ -87,6 +102,7 @@ class classifier:
 
 		x0, y0 = np.meshgrid(x_grid, y_grid)
 		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
+		med3_cm_boundary =[0 for _ in range(len(c.cluster) + len(d.cluster) + len(e.cluster))]
 
 		for i in range(num_steps):
 			for j in range(num_steps):
@@ -100,9 +116,21 @@ class classifier:
 					boundary[i][j] = 2
 				else:
 					boundary[i][j] = 3
+		points = np.concatenate([c.cluster, d.cluster, e.cluster])
+		for i in range(len(points)):
+			c_dist = sqrt((points[i][0] - c.mean[0])**2 + (points[i][1] - c.mean[1])**2)
+			d_dist = sqrt((points[i][0] - d.mean[0])**2 + (points[i][1] - d.mean[1])**2)
+			e_dist = sqrt((points[i][0] - e.mean[0])**2 + (points[i][1] - e.mean[1])**2)
+			
+			if min(c_dist, d_dist, e_dist) == c_dist:
+				med3_cm_boundary[i] = 1
+			elif min(c_dist, d_dist, e_dist) == d_dist:
+				med3_cm_boundary[i] = 2
+			else:
+				med3_cm_boundary[i] = 3
 
 		print('completed.')
-		return [boundary, x_grid, y_grid]
+		return [boundary, med3_cm_boundary, x_grid, y_grid]
 
 	@staticmethod
 	def create_ged2(a, b):
@@ -395,8 +423,8 @@ if __name__ == "__main__":
 		cla.eigenvals, cla.eigenvecs = np.linalg.eig(cla.covariance)
 
 	# Determine MED classifiers
-	MED_ab, med_ab_x, med_ab_y = classifier.create_med2(a, b)
-	MED_cde, med_cde_x, med_cde_y = classifier.create_med3(c, d, e)
+	MED_ab, med2_cm_boundary, med_ab_x, med_ab_y = classifier.create_med2(a, b)
+	MED_cde, med3_cm_boundary, med_cde_x, med_cde_y = classifier.create_med3(c, d, e)
 
 	# Determine GED classifiers
 	GED_ab, ged_ab_x, ged_ab_y = classifier.create_ged2(a, b)
@@ -468,4 +496,34 @@ if __name__ == "__main__":
 	axs2[1].contour(knn_cde_x, knn_cde_y, KNN_cde, colors="black")
 	axs2[1].legend(["Class C", "Class D", "Class E"])
 
-	plt.show()
+	#plt.show()
+
+	#Error Analysis
+	#Making an array of 1s for all points in class A and an array of 2s for all points in class B
+	#points contains all the actual values for class A and B
+	points_a = [1 for x in a.cluster]
+	points_b = [2 for x in b.cluster]
+	points_ab = points_a + points_b
+
+	#Making an array of 1s for all points in class C, array of 2s for all points in class D, array of 3s for class E
+	#points contains all the actual values for class C, D, E
+	points_c = [1 for x in c.cluster]
+	points_d = [2 for x in d.cluster]
+	points_e = [3 for x in e.cluster]
+	points_cde = points_c + points_d + points_e
+
+	#Confusion Matrix for MED2
+	c_matrix_med2 = confusion_matrix(points_ab, med2_cm_boundary)
+	print("Confusion Matrix MED2: \n {}".format(c_matrix_med2))
+
+	#Calculate Error Rate for MED2
+	med2_error_rate = 1 - (accuracy_score(points_ab, med2_cm_boundary, normalize=True)) #error rate = 1 - accuracy score
+	print("Error Rate MED2 = {}".format(med2_error_rate))
+
+	#Confusion Matrix for MED3
+	c_matrix_med3 = confusion_matrix(points_cde, med3_cm_boundary)
+	print("Confusion Matrix MED3: \n {}".format(c_matrix_med3))
+
+	#Calculate Error Rate for MED3
+	med3_error_rate = 1 - (accuracy_score(points_cde, med3_cm_boundary, normalize=True)) #error rate = 1 - accuracy score
+	print("Error Rate MED3 = {}".format(med3_error_rate))
