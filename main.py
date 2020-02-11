@@ -42,9 +42,12 @@ class class_:
 
 class classifier:
 	@staticmethod
-	def getEuclideanDistance(px1, py1, x0, y0, i, j):
+	def get_micd_dist(obj, coord):
+		return sqrt(np.matmul(np.matmul(np.subtract(coord, obj.mean), np.linalg.inv(obj.covariance)), np.subtract(coord, obj.mean).T))
+
+	@staticmethod
+	def get_euclidean_dist(px1, py1, x0, y0, i, j):
 		return sqrt((x0[i][j] - px1)**2 + (y0[i][j] - py1)**2)
-			
 			
 	@staticmethod
 	def create_med2(a, b):
@@ -60,14 +63,13 @@ class classifier:
 
 		for i in range(num_steps):
 			for j in range(num_steps):
-				a_dist = classifier.getEuclideanDistance(a.mean[0], a.mean[1], x0, y0, i, j)
-				b_dist = classifier.getEuclideanDistance(b.mean[0], b.mean[1], x0, y0, i, j)
+				a_dist = classifier.get_euclidean_dist(a.mean[0], a.mean[1], x0, y0, i, j)
+				b_dist = classifier.get_euclidean_dist(b.mean[0], b.mean[1], x0, y0, i, j)
 				
 				boundary[i][j] = a_dist - b_dist
 
 		print('completed.')
 		return [boundary, x_grid, y_grid]
-
 
 	@staticmethod
 	def create_ged2(a, b):
@@ -79,21 +81,17 @@ class classifier:
 
 		x, y = np.meshgrid(x_grid, y_grid)
 
-		inverse_a = np.linalg.inv(a.covariance)
-		inverse_b = np.linalg.inv(b.covariance)
-
 		boundary=[[0 for _ in range(len(x_grid))]for _ in range(len(y_grid))]
 
 		for i in range(num_steps):
 			for j in range(num_steps):
 				coord = [x[i][j], y[i][j]]
-				subtract_1 = sqrt( np.matmul(np.matmul(np.subtract(coord,a.mean), inverse_a), np.subtract(coord, a.mean).T ) )
-				subtract_2 = sqrt( np.matmul(np.matmul(np.subtract(coord,b.mean), inverse_b), np.subtract(coord, b.mean).T ) )
+				subtract_1 = classifier.get_micd_dist(a, coord)
+				subtract_2 = classifier.get_micd_dist(b, coord)
 				boundary[i][j] =  (subtract_1 - subtract_2)
 
 		print('completed.')
 		return [boundary, x_grid, y_grid]
-
 
 	@staticmethod
 	def create_med3(c, d, e):
@@ -109,9 +107,9 @@ class classifier:
 
 		for i in range(num_steps):
 			for j in range(num_steps):
-				c_dist = classifier.getEuclideanDistance(c.mean[0], c.mean[1], x0, y0, i, j)
-				d_dist = classifier.getEuclideanDistance(d.mean[0], d.mean[1], x0, y0, i, j)
-				e_dist = classifier.getEuclideanDistance(e.mean[0], e.mean[1], x0, y0, i, j)
+				c_dist = classifier.get_euclidean_dist(*c.mean, x0, y0, i, j)
+				d_dist = classifier.get_euclidean_dist(*d.mean, x0, y0, i, j)
+				e_dist = classifier.get_euclidean_dist(*e.mean, x0, y0, i, j)
 
 				if min(c_dist, d_dist, e_dist) == c_dist:
 					boundary[i][j] = 1
@@ -122,7 +120,6 @@ class classifier:
 
 		print('completed')
 		return [boundary, x_grid, y_grid]
-
 
 	@staticmethod
 	def create_ged3(c, d, e):
@@ -138,15 +135,12 @@ class classifier:
 
 		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
 
-		def get_dist(obj, coord):
-			return sqrt(np.matmul(np.matmul(np.subtract(coord, obj.mean), np.linalg.inv(obj.covariance)), np.subtract(coord, obj.mean).T))
-
 		for i in range(num_steps):
 			for j in range(num_steps):
 				coord = [x[i][j], y[i][j]]
-				c_dist = get_dist(c, coord)
-				d_dist = get_dist(d, coord)
-				e_dist = get_dist(e, coord)
+				c_dist = classifier.get_micd_dist(c, coord)
+				d_dist = classifier.get_micd_dist(d, coord)
+				e_dist = classifier.get_micd_dist(e, coord)
 
 				if min(c_dist, d_dist, e_dist) == c_dist:
 					boundary[i][j] = 1
@@ -157,7 +151,6 @@ class classifier:
 
 		print('completed')
 		return [boundary, x_grid, y_grid]
-
 
 
 if __name__ == "__main__":
