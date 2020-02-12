@@ -6,17 +6,16 @@ from math import pi, sqrt
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 
+
 class classifier:
 	@staticmethod
 	def get_micd_dist(obj, coord):
 		return sqrt(np.matmul(np.matmul(np.subtract(coord, obj.mean), np.linalg.inv(obj.covariance)),
 							  np.subtract(coord, obj.mean).T))
 
-
 	@staticmethod
 	def get_euclidean_dist(px1, py1, px0, py0):
-		return sqrt((px0 - px1)**2 + (py0 - py1)**2)
-
+		return sqrt((px0 - px1) ** 2 + (py0 - py1) ** 2)
 
 	@staticmethod
 	def create_med2(a, b):
@@ -37,14 +36,13 @@ class classifier:
 				b_dist = classifier.get_euclidean_dist(b.mean[0], b.mean[1], x0[i][j], y0[i][j])
 
 				boundary[i][j] = a_dist - b_dist
-			
+
 			# Print progress
 			sys.stdout.write('\r')
 			sys.stdout.write('Calculating MED2... Row: {0:4}/{1:4}'.format(i + 1, num_steps))
 
 		print('... completed.')
 		return [boundary, x_grid, y_grid]
-
 
 	@staticmethod
 	def create_med3(c, d, e):
@@ -78,7 +76,6 @@ class classifier:
 		print('... completed.')
 		return [boundary, x_grid, y_grid]
 
-
 	@staticmethod
 	def create_ged2(a, b):
 		num_steps = 500
@@ -97,14 +94,13 @@ class classifier:
 				a_dist = classifier.get_micd_dist(a, coord)
 				b_dist = classifier.get_micd_dist(b, coord)
 				boundary[i][j] = (a_dist - b_dist)
-			
+
 			# Print progress
 			sys.stdout.write('\r')
 			sys.stdout.write('Calculating GED2... Row: {0:4}/{1:4}'.format(i + 1, num_steps))
 
 		print('... completed.')
 		return [boundary, x_grid, y_grid]
-
 
 	@staticmethod
 	def create_ged3(c, d, e):
@@ -138,7 +134,6 @@ class classifier:
 		print('... completed.')
 		return [boundary, x_grid, y_grid]
 
-
 	@staticmethod
 	def create_map2(a, b):
 		print('Calculating MAP2...', end=" ")
@@ -156,8 +151,7 @@ class classifier:
 		p_a = a.n / (a.n + b.n)
 		p_b = b.n / (a.n + b.n)
 
-		# Calculate marginal of a and b
-
+	# Calculate marginal of a and b
 
 	@staticmethod
 	def create_map3(c, d, e):
@@ -173,8 +167,7 @@ class classifier:
 		x0, y0 = np.meshgrid(x_grid, y_grid)
 		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
 
-		# TODO: implement
-
+	# TODO: implement
 
 	@staticmethod
 	def create_nn2(a, b):
@@ -205,14 +198,13 @@ class classifier:
 						b_dist = temp_dist
 
 				boundary[i][j] = a_dist - b_dist
-		
+
 			# Print progress
 			sys.stdout.write('\r')
 			sys.stdout.write('Calculating NN2...  Row: {0:4}/{1:4}'.format(i + 1, num_steps))
 
 		print('... completed.')
 		return [boundary, x_grid, y_grid]
-	
 
 	@staticmethod
 	def create_nn3(c, d, e):
@@ -262,7 +254,6 @@ class classifier:
 		print('... completed.')
 		return [boundary, x_grid, y_grid]
 
-
 	@staticmethod
 	def create_knn2(a, b):
 		num_steps = 100
@@ -303,7 +294,6 @@ class classifier:
 
 		print('... completed.')
 		return [boundary, x_grid, y_grid]
-	
 
 	@staticmethod
 	def create_knn3(c, d, e):

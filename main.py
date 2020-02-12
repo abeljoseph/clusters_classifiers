@@ -5,7 +5,6 @@ from data_class import data_class_
 from classifiers import classifier
 from error_calculation import error_calc
 
-
 if __name__ == "__main__":
 	# Instantiate classes
 	a = data_class_(n=200, mean=[5, 10], covariance=[[8, 0], [0, 4]])
@@ -72,7 +71,6 @@ if __name__ == "__main__":
 
 	# axs1[1].contour(map_cde_x, map_cde_y, MAP_cde, colors="green")
 
-
 	############## --- Plot 2 --- ##############
 	print('\n---------------------- Plot 2 ----------------------')
 	# Determine NN classifiers
@@ -121,7 +119,6 @@ if __name__ == "__main__":
 	labels_NN_cde = ['Class C', 'Class D', 'Class E', 'NN Classifier', 'kNN Classifier']
 
 	axs2[1].legend(handles_CDE, labels_NN_cde)
-
 
 	########## --- Error Analysis --- ##########
 	print('\n------------------ Error Analysis ------------------')
@@ -185,16 +182,16 @@ if __name__ == "__main__":
 	print("Error Rate GED3 = {:.3f}".format(ged3_error_rate))
 
 	# Print Confusion Matrix for MAP2
-	#print("\nConfusion Matrix MAP2: \n {}".format(c_matrix_map2))
+	# print("\nConfusion Matrix MAP2: \n {}".format(c_matrix_map2))
 
 	# Print Error Rate for MAP2
-	#print("Error Rate MAP2 = {:.3f}".format(map2_error_rate))
+	# print("Error Rate MAP2 = {:.3f}".format(map2_error_rate))
 
 	# Print Confusion Matrix for MAP3
-	#print("\nConfusion Matrix MAP3: \n {}".format(c_matrix_map3))
+	# print("\nConfusion Matrix MAP3: \n {}".format(c_matrix_map3))
 
 	# Print Error Rate for MAP3
-	#print("Error Rate MAP3 = {:.3f}".format(map3_error_rate))
+	# print("Error Rate MAP3 = {:.3f}".format(map3_error_rate))
 
 	# Print Confusion Matrix for NN2
 	print("\nConfusion Matrix NN2: \n {}".format(c_matrix_nn2))
@@ -219,7 +216,6 @@ if __name__ == "__main__":
 
 	# Print Error Rate for KNN3
 	print("Error Rate KNN3 = {:.3f}".format(knn3_error_rate))
-
 
 	# Show plots
 	plt.show()

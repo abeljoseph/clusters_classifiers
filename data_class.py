@@ -11,11 +11,9 @@ class data_class_:
 		self.cluster = self.create_normal_distribution()
 		self.eigenvals, self.eigenvecs = np.linalg.eig(self.covariance)
 		self.testing_cluster = self.create_normal_distribution()
-		
 
 	def create_normal_distribution(self):
 		return np.random.multivariate_normal(self.mean, self.covariance, size=self.n)
-
 
 	def plot(self, ax):
 		max_index = np.where(self.eigenvals == max(self.eigenvals))[0][0]
