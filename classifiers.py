@@ -354,7 +354,7 @@ class classifier:
 
 				# Print progress
 				sys.stdout.write('\r')
-				sys.stdout.write('Calculating KNN2... Row: {0:4}/{1:4}'.format(i + 1, num_steps))
+				sys.stdout.write('Calculating KNN3... Row: {0:4}/{1:4}'.format(i + 1, num_steps))
 
 		print('... completed.')
 		return [boundary, x_grid, y_grid]

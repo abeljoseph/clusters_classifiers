@@ -6,6 +6,8 @@ from math import pi, sqrt
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 
+from classifiers import classifier
+
 class error_calc:
 	@staticmethod
 	def med2_error(a, b):
@@ -70,7 +72,7 @@ class error_calc:
 
 			# Print progress
 			sys.stdout.write('\r')
-			sys.stdout.write('Calculating MED3 error... Row: {0:4}/{1:4}'.format(i + 1, len(med3_cm_boundary)))
+			sys.stdout.write('Calculating MED3 error... Row: {0:4}/{1:4}'.format(i + 1, len(ged2_cm_boundary)))
 
 		print('... completed.')
 		return ged2_cm_boundary
@@ -95,7 +97,7 @@ class error_calc:
 			
 			# Print progress
 			sys.stdout.write('\r')
-			sys.stdout.write('Calculating MED3 error... Row: {0:4}/{1:4}'.format(i + 1, len(med3_cm_boundary)))
+			sys.stdout.write('Calculating MED3 error... Row: {0:4}/{1:4}'.format(i + 1, len(ged3_cm_boundary)))
 
 		print('... completed.')
 		return ged3_cm_boundary

@@ -6,13 +6,17 @@ from math import pi, sqrt
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 
+from data_class import data_class_
+from classifiers import classifier
+from error_calculation import error_calc
+
 if __name__ == "__main__":
 	# Instantiate classes
-	a = class_(n=200, mean=[5, 10], covariance=[[8, 0], [0, 4]])
-	b = class_(n=200, mean=[10, 15], covariance=[[8, 0], [0, 4]])
-	c = class_(n=100, mean=[5, 10], covariance=[[8, 4], [4, 40]])
-	d = class_(n=200, mean=[15, 10], covariance=[[8, 0], [0, 8]])
-	e = class_(n=150, mean=[10, 5], covariance=[[10, -5], [-5, 20]])
+	a = data_class_(n=200, mean=[5, 10], covariance=[[8, 0], [0, 4]])
+	b = data_class_(n=200, mean=[10, 15], covariance=[[8, 0], [0, 4]])
+	c = data_class_(n=100, mean=[5, 10], covariance=[[8, 4], [4, 40]])
+	d = data_class_(n=200, mean=[15, 10], covariance=[[8, 0], [0, 8]])
+	e = data_class_(n=150, mean=[10, 5], covariance=[[10, -5], [-5, 20]])
 
 	class_list = [a, b, c, d, e]
 
