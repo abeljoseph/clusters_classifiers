@@ -51,8 +51,8 @@ class classifier:
 							  np.subtract(coord, obj.mean).T))
 
 	@staticmethod
-	def get_euclidean_dist(px1, py1, x0, y0, i, j):
-		return sqrt((x0[i][j] - px1) ** 2 + (y0[i][j] - py1) ** 2)
+	def get_euclidean_dist(px1, py1, px0, py0):
+		return sqrt((px0 - px1)**2 + (py0 - py1)**2)
 
 	@staticmethod
 	def create_med2(a, b):
@@ -71,8 +71,8 @@ class classifier:
 
 		for i in range(num_steps):
 			for j in range(num_steps):
-				a_dist = classifier.get_euclidean_dist(a.mean[0], a.mean[1], x0, y0, i, j)
-				b_dist = classifier.get_euclidean_dist(b.mean[0], b.mean[1], x0, y0, i, j)
+				a_dist = classifier.get_euclidean_dist(a.mean[0], a.mean[1], x0[i][j], y0[i][j])
+				b_dist = classifier.get_euclidean_dist(b.mean[0], b.mean[1], x0[i][j], y0[i][j])
 
 				boundary[i][j] = a_dist - b_dist
 		
@@ -107,9 +107,9 @@ class classifier:
 
 		for i in range(num_steps):
 			for j in range(num_steps):
-				c_dist = classifier.get_euclidean_dist(*c.mean, x0, y0, i, j)
-				d_dist = classifier.get_euclidean_dist(*d.mean, x0, y0, i, j)
-				e_dist = classifier.get_euclidean_dist(*e.mean, x0, y0, i, j)
+				c_dist = classifier.get_euclidean_dist(*c.mean, x0[i][j], y0[i][j])
+				d_dist = classifier.get_euclidean_dist(*d.mean, x0[i][j], y0[i][j])
+				e_dist = classifier.get_euclidean_dist(*e.mean, x0[i][j], y0[i][j])
 
 				if min(c_dist, d_dist, e_dist) == c_dist:
 					boundary[i][j] = 1
@@ -231,25 +231,65 @@ class classifier:
 				# Find nearest neighbours
 				a_dist = float('inf')
 				for coord in a.cluster:
-					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
+					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0[i][j], y0[i][j])
 					if temp_dist < a_dist:
 						a_dist = temp_dist
 
 				b_dist = float('inf')
 				for coord in b.cluster:
-					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
+					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0[i][j], y0[i][j])
 					if temp_dist < b_dist:
 						b_dist = temp_dist
 
 				boundary[i][j] = a_dist - b_dist
-
-			# TODO: change the rest
+		# TODO: change the rest
 			# Print progress
 			sys.stdout.write('\r')
 			sys.stdout.write('Rows: {0:4}/{1:4}'.format(i + 1, num_steps))
 
 		print('... completed.')
 		return [boundary, x_grid, y_grid]
+	
+	@staticmethod
+	def nn2_test(a,b):
+		print('Calculating NN2 for testing data...')
+		num_steps = 100
+
+		# Create Mesh grid
+		x_grid = np.linspace(min(*a.testing_cluster[:, 0], *b.testing_cluster[:, 0]) - 1, max(*a.testing_cluster[:, 0], *b.testing_cluster[:, 0]) + 1,
+							 num_steps)
+		y_grid = np.linspace(min(*a.testing_cluster[:, 1], *b.testing_cluster[:, 1]) - 1, max(*a.testing_cluster[:, 1], *b.testing_cluster[:, 1]) + 1,
+							 num_steps)
+
+		x0, y0 = np.meshgrid(x_grid, y_grid)
+		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
+		nn2_cm_boundary = [0 for _ in range(len(a.testing_cluster) + len(b.testing_cluster))]
+
+		points_ab = np.concatenate([a.testing_cluster, b.testing_cluster])
+		for i,point in enumerate(points_ab):
+			a_dist = float('inf')
+			for coord in a.cluster:
+				temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], point[0], point[1])
+				if temp_dist < a_dist:
+					a_dist = temp_dist
+
+			b_dist = float('inf')
+			for coord in b.cluster:
+				temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], point[0], point[1])
+				if temp_dist < b_dist:
+					b_dist = temp_dist
+
+			if min(a_dist, b_dist) == a_dist:
+				nn2_cm_boundary[i] = 1
+			else:
+				nn2_cm_boundary[i] = 2
+
+			# Print progress
+			sys.stdout.write('\r')
+			sys.stdout.write('Rows: {0:4}/{1:4}'.format(i + 1, num_steps))
+
+		print('... completed.')
+		return [boundary, nn2_cm_boundary, x_grid, y_grid]
 
 	@staticmethod
 	def create_nn3(c, d, e):
@@ -270,19 +310,19 @@ class classifier:
 				# Find nearest neighbours
 				c_dist = float('inf')
 				for coord in c.cluster:
-					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
+					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0[i][j], y0[i][j])
 					if temp_dist < c_dist:
 						c_dist = temp_dist
 
 				d_dist = float('inf')
 				for coord in d.cluster:
-					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
+					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0[i][j], y0[i][j])
 					if temp_dist < d_dist:
 						d_dist = temp_dist
 
 				e_dist = float('inf')
 				for coord in e.cluster:
-					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
+					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0[i][j], y0[i][j])
 					if temp_dist < e_dist:
 						e_dist = temp_dist
 
@@ -299,6 +339,55 @@ class classifier:
 
 		print('... completed.')
 		return [boundary, x_grid, y_grid]
+	@staticmethod
+	def nn3_test(c, d, e):
+		print('Calculating NN3 for testing data...')
+		num_steps = 100
+
+		# Create Mesh grid
+		x_grid = np.linspace(min(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) - 1,
+							 max(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) + 1, num_steps)
+		y_grid = np.linspace(min(*c.cluster[:, 1], *d.cluster[:, 1], *e.cluster[:, 1]) - 1,
+							 max(*c.cluster[:, 1], *d.cluster[:, 1], *e.cluster[:, 1]) + 1, num_steps)
+
+		x0, y0 = np.meshgrid(x_grid, y_grid)
+		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
+		nn3_cm_boundary = [0 for _ in range(len(c.testing_cluster) + len(d.testing_cluster) + len(e.testing_cluster))]
+
+		points_cde = np.concatenate([c.testing_cluster, d.testing_cluster, e.testing_cluster])
+		for i,point in enumerate(points_cde):
+			# Find nearest neighbours
+			c_dist = float('inf')
+			for coord in c.cluster:
+				temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], point[0], point[1])
+				if temp_dist < c_dist:
+					c_dist = temp_dist
+
+			d_dist = float('inf')
+			for coord in d.cluster:
+				temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], point[0], point[1])
+				if temp_dist < d_dist:
+					d_dist = temp_dist
+
+			e_dist = float('inf')
+			for coord in e.cluster:
+				temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], point[0], point[1])
+				if temp_dist < e_dist:
+					e_dist = temp_dist
+
+			if min(c_dist, d_dist, e_dist) == c_dist:
+				nn3_cm_boundary[i] = 1
+			elif min(c_dist, d_dist, e_dist) == d_dist:
+				nn3_cm_boundary[i] = 2
+			else:
+				nn3_cm_boundary[i] = 3
+
+				# Print progress
+				sys.stdout.write('\r')
+				sys.stdout.write('Rows: {0:4}/{1:4}'.format(i + 1, num_steps))
+
+		print('... completed.')
+		return [boundary, nn3_cm_boundary, x_grid, y_grid]
 
 	@staticmethod
 	def create_knn2(a, b):
@@ -319,7 +408,7 @@ class classifier:
 				# Find nearest neighbours
 				a_group = [float('inf') for _ in range(4)]
 				for coord in a.cluster:
-					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
+					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0[i][j], y0[i][j])
 					if temp_dist < max(a_group):
 						a_group[a_group.index(max(a_group))] = temp_dist
 
@@ -327,7 +416,7 @@ class classifier:
 
 				b_group = [float('inf') for _ in range(4)]
 				for coord in b.cluster:
-					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
+					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0[i][j], y0[i][j])
 					if temp_dist < max(b_group):
 						b_group[b_group.index(max(b_group))] = temp_dist
 
@@ -361,7 +450,7 @@ class classifier:
 				# Find nearest neighbours
 				c_group = [float('inf') for _ in range(4)]
 				for coord in c.cluster:
-					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
+					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0[i][j], y0[i][j])
 					if temp_dist < max(c_group):
 						c_group[c_group.index(max(c_group))] = temp_dist
 
@@ -369,7 +458,7 @@ class classifier:
 
 				d_group = [float('inf') for _ in range(4)]
 				for coord in d.cluster:
-					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
+					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0[i][j], y0[i][j])
 					if temp_dist < max(d_group):
 						d_group[d_group.index(max(d_group))] = temp_dist
 
@@ -377,7 +466,7 @@ class classifier:
 
 				e_group = [float('inf') for _ in range(4)]
 				for coord in e.cluster:
-					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0, y0, i, j)
+					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], x0[i][j], y0[i][j])
 					if temp_dist < max(e_group):
 						e_group[e_group.index(max(e_group))] = temp_dist
 
@@ -482,7 +571,9 @@ if __name__ == "__main__":
 
 	# Determine NN classifiers
 	NN_ab, nn_ab_x, nn_ab_y = classifier.create_nn2(a, b)
+	NN_ab, nn2_cm_boundary, nn_ab_x, nn_ab_y = classifier.nn2_test(a, b)
 	NN_cde, nn_cde_x, nn_cde_y = classifier.create_nn3(c, d, e)
+	NN_cde, nn3_cm_boundary, nn_cde_x, nn_cde_y = classifier.nn3_test(c, d, e)
 
 	# Determine KNN classifiers
 	KNN_ab, knn_ab_x, knn_ab_y = classifier.create_knn2(a, b)
@@ -517,9 +608,9 @@ if __name__ == "__main__":
 	axs2[1].contour(knn_cde_x, knn_cde_y, KNN_cde, colors="black")
 	axs2[1].legend(["Class C", "Class D", "Class E"])
 
-	plt.show()
+	#plt.show()
 
-	#Error Analysis
+	########## --- Error Analysis --- ##########
 	#Making an array of 1s for all points in class A and an array of 2s for all points in class B
 	#points contains all the actual values for class A and B
 	points_a = [1 for x in a.cluster]
@@ -564,3 +655,20 @@ if __name__ == "__main__":
 	#Calculate Error Rate for GED3
 	ged3_error_rate = 1 - (accuracy_score(points_cde, ged3_cm_boundary, normalize=True)) #error rate = 1 - accuracy score
 	print("Error Rate GED3 = {}".format(ged3_error_rate))
+
+	#Confusion Matrix for NN2
+	c_matrix_nn2 = confusion_matrix(points_ab, nn2_cm_boundary)
+	print("Confusion Matrix NN2: \n {}".format(c_matrix_nn2))
+
+	#Calculate Error Rate for NN2
+	nn2_error_rate = 1 - (accuracy_score(points_ab, nn2_cm_boundary, normalize=True)) #error rate = 1 - accuracy score
+	print("Error Rate NN2 = {}".format(nn2_error_rate))
+
+	#Confusion Matrix for NN3
+	c_matrix_nn3 = confusion_matrix(points_cde, nn3_cm_boundary)
+	print("Confusion Matrix NN3: \n {}".format(c_matrix_nn3))
+
+	#Calculate Error Rate for NN3
+	nn3_error_rate = 1 - (accuracy_score(points_cde, nn3_cm_boundary, normalize=True)) #error rate = 1 - accuracy score
+	print("Error Rate NN3 = {}".format(nn3_error_rate))
+
