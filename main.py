@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle
 
 from data_class import data_class_
 from classifiers import classifier
@@ -43,10 +44,15 @@ if __name__ == "__main__":
 	b.plot(axs1[0])
 
 	# Plot Classifiers
-	axs1[0].contour(med_ab_x, med_ab_y, MED_ab, levels=[0], colors="black")
-	axs1[0].contour(ged_ab_x, ged_ab_y, GED_ab, levels=[0], colors="red")
-	#axs1[0].contour(map_ab_x, map_ab_y, MAP_ab, colors="green")
-	axs1[0].legend(["Class A", "Class B"])
+	contour_MED_ab = axs1[0].contour(med_ab_x, med_ab_y, MED_ab, levels=[0], colors="black")
+	contour_GED_ab = axs1[0].contour(ged_ab_x, ged_ab_y, GED_ab, levels=[0], colors="red")
+
+	handles_AB = [Rectangle((0, 0), 1, 1, color="C0"), Rectangle((0, 0), 1, 1, color="C1"),
+				  contour_MED_ab.collections[0], contour_GED_ab.collections[0]]
+	labels_AB = ['Class A', 'Class B', 'MED Classifier', 'GED Classifier']
+
+	# axs1[0].contour(map_ab_x, map_ab_y, MAP_ab, colors="green")
+	axs1[0].legend(handles_AB, labels_AB)
 
 	# Plot C, D, E
 	axs1[1].set_title("Feature 2 vs. Feature 1 for classes C, D and E")
@@ -54,11 +60,17 @@ if __name__ == "__main__":
 	d.plot(axs1[1])
 	e.plot(axs1[1])
 
-	# Plot Classifiers
-	axs1[1].contour(med_cde_x, med_cde_y, MED_cde, colors="black")
-	axs1[1].contour(ged_cde_x, ged_cde_y, GED_cde, colors="red")
-	#axs1[1].contour(map_cde_x, map_cde_y, MAP_cde, colors="green")
-	axs1[1].legend(["Class C", "Class D", "Class E"])
+	# # Plot Classifiers
+	contour_MED_cde = axs1[1].contour(med_cde_x, med_cde_y, MED_cde, colors="black")
+	contour_GED_cde = axs1[1].contour(ged_cde_x, ged_cde_y, GED_cde, colors="red")
+
+	handles_CDE = [Rectangle((0, 0), 1, 1, color="C0"), Rectangle((0, 0), 1, 1, color="C1"),
+				   Rectangle((0, 0), 1, 1, color="C2"), contour_MED_cde.collections[0], contour_GED_cde.collections[0]]
+	labels_CDE = ['Class C', 'Class D', 'Class E', 'MED Classifier', 'GED Classifier']
+
+	axs1[1].legend(handles_CDE, labels_CDE)
+
+	# axs1[1].contour(map_cde_x, map_cde_y, MAP_cde, colors="green")
 
 
 	############## --- Plot 2 --- ##############
@@ -85,9 +97,14 @@ if __name__ == "__main__":
 	b.plot(axs2[0])
 
 	# Plot Classifiers
-	axs2[0].contour(nn_ab_x, nn_ab_y, NN_ab, levels=[0], colors="red")
-	axs2[0].contour(knn_ab_x, knn_ab_y, KNN_ab, levels=[0], colors="black")
-	axs2[0].legend(["Class A", "Class B"])
+	contour_NN_ab = axs2[0].contour(nn_ab_x, nn_ab_y, NN_ab, levels=[0], colors="red")
+	contour_kNN_ab = axs2[0].contour(knn_ab_x, knn_ab_y, KNN_ab, levels=[0], colors="black")
+
+	handles_NN_ab = [Rectangle((0, 0), 1, 1, color="C0"), Rectangle((0, 0), 1, 1, color="C1"),
+					 contour_NN_ab.collections[0], contour_kNN_ab.collections[0]]
+	labels_NN_ab = ['Class A', 'Class B', 'NN Classifier', 'kNN Classifier']
+
+	axs2[0].legend(handles_NN_ab, labels_NN_ab)
 
 	# Plot C, D, E
 	axs2[1].set_title("Feature 2 vs. Feature 1 for classes C, D and E")
@@ -96,14 +113,19 @@ if __name__ == "__main__":
 	e.plot(axs2[1])
 
 	# Plot Classifiers
-	axs2[1].contour(nn_cde_x, nn_cde_y, NN_cde, colors="red")
-	axs2[1].contour(knn_cde_x, knn_cde_y, KNN_cde, colors="black")
-	axs2[1].legend(["Class C", "Class D", "Class E"])
+	contour_NN_cde = axs2[1].contour(nn_cde_x, nn_cde_y, NN_cde, colors="red")
+	contour_kNN_cde = axs2[1].contour(knn_cde_x, knn_cde_y, KNN_cde, colors="black")
+
+	handles_NN_cde = [Rectangle((0, 0), 1, 1, color="C0"), Rectangle((0, 0), 1, 1, color="C1"),
+				   Rectangle((0, 0), 1, 1, color="C2"), contour_NN_cde.collections[0], contour_kNN_cde.collections[0]]
+	labels_NN_cde = ['Class C', 'Class D', 'Class E', 'NN Classifier', 'kNN Classifier']
+
+	axs2[1].legend(handles_CDE, labels_NN_cde)
 
 
 	########## --- Error Analysis --- ##########
 	print('\n------------------ Error Analysis ------------------')
-	
+
 	# Making an array of 1s for all points in class A and an array of 2s for all points in class B
 	# points contains all the actual values for class A and B
 	points_a = [1 for x in a.cluster]
@@ -131,8 +153,8 @@ if __name__ == "__main__":
 	c_matrix_med3, med3_error_rate = error_calc.med3_error(c, d, e, points_cde)
 	c_matrix_ged2, ged2_error_rate = error_calc.ged2_error(a, b, points_ab)
 	c_matrix_ged3, ged3_error_rate = error_calc.ged3_error(c, d, e, points_cde)
-	#c_matrix_map2, map2_error_rate = error_calc.map2_error(a, b, points_ab)
-	#c_matrix_map3, map3_error_rate = error_calc.map3_error(c, d, e, points_cde)
+	# c_matrix_map2, map2_error_rate = error_calc.map2_error(a, b, points_ab)
+	# c_matrix_map3, map3_error_rate = error_calc.map3_error(c, d, e, points_cde)
 	c_matrix_nn2, nn2_error_rate = error_calc.nn2_test_error(a, b, testing_points_ab)
 	c_matrix_nn3, nn3_error_rate = error_calc.nn3_test_error(c, d, e, testing_points_cde)
 	c_matrix_knn2, knn2_error_rate = error_calc.knn2_test_error(a, b, testing_points_ab)
