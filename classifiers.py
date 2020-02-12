@@ -4,6 +4,7 @@ import sys
 import time
 
 from math import pi, sqrt, exp
+from statistics import mode
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 
@@ -187,7 +188,7 @@ class classifier:
 
 	@staticmethod
 	def create_map3(c, d, e):
-		print('Calculating MAP3...', end=" ")
+		start_time = time.time()
 		num_steps = 100
 
 		# Create Mesh grid
@@ -199,7 +200,32 @@ class classifier:
 		x0, y0 = np.meshgrid(x_grid, y_grid)
 		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
 
-	# TODO: implement
+		p_c = c.n / (c.n + c.n)
+		p_d = d.n / (d.n + d.n)
+		p_e = e.n / (e.n + e.n)
+
+		for i in range(num_steps):
+			for j in range(num_steps):
+				coord = [x0[i][j], y0[i][j]]
+				c_marg = classifier.get_marg(c, coord)
+				d_marg = classifier.get_marg(d, coord)
+				e_marg = classifier.get_marg(e, coord)
+
+				res = [1 if (c_marg / d_marg) > (p_d / p_c) else 2,
+					   1 if (c_marg / e_marg) > (p_e / p_c) else 3,
+					   2 if (d_marg / e_marg) > (p_e / p_d) else 3]
+
+				boundary[i][j] = mode(res)
+
+				# Print progress
+				sys.stdout.write('\r')
+				sys.stdout.write('Calculating MAP3... Row: {0:4}/{1:4}'.format(i + 1, num_steps))
+
+		end_time = time.time()
+		print('... completed ({:9.4f} seconds).'.format(end_time - start_time))
+		return [boundary, x_grid, y_grid]
+
+
 
 	@staticmethod
 	def create_nn2(a, b):

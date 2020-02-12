@@ -27,7 +27,7 @@ if __name__ == "__main__":
 
 	# Determine MAP classifiers
 	MAP_ab, map_ab_x, map_ab_y = classifier.create_map2(a, b)
-	# MAP_cde, map_cde_x, map_cde_y = classifier.create_map3(c, d, e)
+	MAP_cde, map_cde_x, map_cde_y = classifier.create_map3(c, d, e)
 
 	# Create scatters and set appearance for MED, GED, and MAP
 	fig1, axs1 = plt.subplots(1, 2, figsize=(20, 10), subplot_kw={'aspect': 1})
@@ -50,7 +50,7 @@ if __name__ == "__main__":
 				  contour_MED_ab.collections[0], contour_GED_ab.collections[0]]
 	labels_AB = ['Class A', 'Class B', 'MED Classifier', 'GED Classifier']
 
-	# axs1[0].contour(map_ab_x, map_ab_y, MAP_ab, colors="green")
+	axs1[0].contour(map_ab_x, map_ab_y, MAP_ab, colors="green")
 	axs1[0].legend(handles_AB, labels_AB)
 
 	# Plot C, D, E
@@ -68,8 +68,7 @@ if __name__ == "__main__":
 	labels_CDE = ['Class C', 'Class D', 'Class E', 'MED Classifier', 'GED Classifier']
 
 	axs1[1].legend(handles_CDE, labels_CDE)
-
-	# axs1[1].contour(map_cde_x, map_cde_y, MAP_cde, colors="green")
+	axs1[1].contour(map_cde_x, map_cde_y, MAP_cde, colors="green")
 
 	############## --- Plot 2 --- ##############
 	print('\n---------------------- Plot 2 ----------------------')
