@@ -138,7 +138,7 @@ if __name__ == "__main__":
 	print("\nConfusion Matrix MED2: \n {}".format(c_matrix_med2))
 
 	# Calculate Error Rate for MED2
-	med2_error_rate = 1 - (accuracy_score(points_ab, med2_cm_boundary, normalize=True)) #error rate = 1 - accuracy score
+	med2_error_rate = round(1 - (accuracy_score(points_ab, med2_cm_boundary, normalize=True)), 2) #error rate = 1 - accuracy score
 	print("Error Rate MED2 = {}".format(med2_error_rate))
 
 	# Confusion Matrix for MED3
@@ -146,7 +146,7 @@ if __name__ == "__main__":
 	print("\nConfusion Matrix MED3: \n {}".format(c_matrix_med3))
 
 	# Calculate Error Rate for MED3
-	med3_error_rate = 1 - (accuracy_score(points_cde, med3_cm_boundary, normalize=True)) #error rate = 1 - accuracy score
+	med3_error_rate = round(1 - (accuracy_score(points_cde, med3_cm_boundary, normalize=True)), 2) #error rate = 1 - accuracy score
 	print("Error Rate MED3 = {}".format(med3_error_rate))
 
 	# Confusion Matrix for GED2
@@ -154,7 +154,7 @@ if __name__ == "__main__":
 	print("\nConfusion Matrix GED2: \n {}".format(c_matrix_ged2))
 
 	# Calculate Error Rate for GED2
-	ged2_error_rate = 1 - (accuracy_score(points_ab, ged2_cm_boundary, normalize=True)) #error rate = 1 - accuracy score
+	ged2_error_rate = round(1 - (accuracy_score(points_ab, ged2_cm_boundary, normalize=True)),2) #error rate = 1 - accuracy score
 	print("Error Rate GED2 = {}".format(ged2_error_rate))
 
 	# Confusion Matrix for GED3
@@ -162,7 +162,7 @@ if __name__ == "__main__":
 	print("\nConfusion Matrix GED3: \n {}".format(c_matrix_ged3))
 
 	# Calculate Error Rate for GED3
-	ged3_error_rate = 1 - (accuracy_score(points_cde, ged3_cm_boundary, normalize=True)) #error rate = 1 - accuracy score
+	ged3_error_rate = round(1 - (accuracy_score(points_cde, ged3_cm_boundary, normalize=True)),2) #error rate = 1 - accuracy score
 	print("Error Rate GED3 = {}".format(ged3_error_rate))
 
 	# Confusion Matrix for NN2
@@ -170,7 +170,7 @@ if __name__ == "__main__":
 	print("\nConfusion Matrix NN2: \n {}".format(c_matrix_nn2))
 
 	# Calculate Error Rate for NN2
-	nn2_error_rate = 1 - (accuracy_score(testing_points_ab, nn2_cm_boundary, normalize=True)) #error rate = 1 - accuracy score
+	nn2_error_rate = round(1 - (accuracy_score(testing_points_ab, nn2_cm_boundary, normalize=True)), 2) #error rate = 1 - accuracy score
 	print("Error Rate NN2 = {}".format(nn2_error_rate))
 
 	# Confusion Matrix for NN3
@@ -178,7 +178,7 @@ if __name__ == "__main__":
 	print("\nConfusion Matrix NN3: \n {}".format(c_matrix_nn3))
 
 	# Calculate Error Rate for NN3
-	nn3_error_rate = 1 - (accuracy_score(testing_points_cde, nn3_cm_boundary, normalize=True)) #error rate = 1 - accuracy score
+	nn3_error_rate = round(1 - (accuracy_score(testing_points_cde, nn3_cm_boundary, normalize=True)),2) #error rate = 1 - accuracy score
 	print("Error Rate NN3 = {}".format(nn3_error_rate))
 
 	# Confusion Matrix for KNN2
@@ -186,7 +186,7 @@ if __name__ == "__main__":
 	print("\nConfusion Matrix KNN2: \n {}".format(c_matrix_nn2))
 
 	# Calculate Error Rate for KNN2
-	knn2_error_rate = 1 - (accuracy_score(testing_points_ab, knn2_cm_boundary, normalize=True)) #error rate = 1 - accuracy score
+	knn2_error_rate = round(1 - (accuracy_score(testing_points_ab, knn2_cm_boundary, normalize=True)),2) #error rate = 1 - accuracy score
 	print("Error Rate KNN2 = {}".format(knn2_error_rate))
 
 	# Confusion Matrix for KNN3
@@ -194,7 +194,7 @@ if __name__ == "__main__":
 	print("\nConfusion Matrix KNN3: \n {}".format(c_matrix_knn3))
 
 	# Calculate Error Rate for KNN3
-	knn3_error_rate = 1 - (accuracy_score(testing_points_cde, knn3_cm_boundary, normalize=True)) #error rate = 1 - accuracy score
+	knn3_error_rate = round(1 - (accuracy_score(testing_points_cde, knn3_cm_boundary, normalize=True)),2) #error rate = 1 - accuracy score
 	print("Error Rate KNN3 = {}".format(knn3_error_rate))
 
 
