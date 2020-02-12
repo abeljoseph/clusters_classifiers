@@ -200,9 +200,10 @@ class classifier:
 		x0, y0 = np.meshgrid(x_grid, y_grid)
 		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
 
-		p_c = c.n / (c.n + c.n)
-		p_d = d.n / (d.n + d.n)
-		p_e = e.n / (e.n + e.n)
+		# Calculate P(c), P(d) and P(e)
+		p_c = c.n / (c.n + d.n + e.n)
+		p_d = d.n / (c.n + d.n + e.n)
+		p_e = e.n / (c.n + d.n + e.n)
 
 		for i in range(num_steps):
 			for j in range(num_steps):
@@ -224,8 +225,6 @@ class classifier:
 		end_time = time.time()
 		print('... completed ({:9.4f} seconds).'.format(end_time - start_time))
 		return [boundary, x_grid, y_grid]
-
-
 
 	@staticmethod
 	def create_nn2(a, b):
