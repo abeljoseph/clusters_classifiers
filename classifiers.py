@@ -18,6 +18,12 @@ class classifier:
 		return sqrt((px0 - px1) ** 2 + (py0 - py1) ** 2)
 
 	@staticmethod
+	def get_marg(cl, coord):
+		coord_mean_diff = (np.subtract(coord, cl.mean))
+		mult = np.matmul(np.transpose(coord_mean_diff), (np.matmul(np.linalg.inv(cl.covariance), coord_mean_diff)))
+		return (1 / (((2 * pi) ** (cl.n / 2)) * sqrt(np.linalg.det(cl.covariance)))) * exp((-1 / 2) * mult)
+
+	@staticmethod
 	def create_med2(a, b):
 		num_steps = 500
 
@@ -152,19 +158,13 @@ class classifier:
 
 		threshold = p_b / p_a
 
-		# Get the marginal given a class
-		def get_marg(cl, coord):
-			coord_mean_diff = (np.subtract(coord, cl.mean))
-			mult = np.matmul(np.transpose(coord_mean_diff), (np.matmul(np.linalg.inv(cl.covariance), coord_mean_diff)))
-			return (1 / (((2 * pi) ** (cl.n / 2)) * sqrt(np.linalg.det(cl.covariance)))) * exp((-1 / 2) * mult)
-
 		for i in range(num_steps):
 			for j in range(num_steps):
 				coord = [x0[i][j], y0[i][j]]
-				a_marg = get_marg(a, coord)
-				b_marg = get_marg(b, coord)
+				a_marg = classifier.get_marg(a, coord)
+				b_marg = classifier.get_marg(b, coord)
 
-				boundary[i][j] = 1 if (a_marg / b_marg) > (p_b / p_a) else 2
+				boundary[i][j] = 1 if (a_marg / b_marg) > threshold else 2
 
 				# Print progress
 				sys.stdout.write('\r')
