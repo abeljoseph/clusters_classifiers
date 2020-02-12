@@ -4,7 +4,6 @@ from data_class import data_class_
 from classifiers import classifier
 from error_calculation import error_calc
 
-
 if __name__ == "__main__":
 	# Instantiate classes
 	a = data_class_(n=200, mean=[5, 10], covariance=[[8, 0], [0, 4]])
@@ -45,7 +44,7 @@ if __name__ == "__main__":
 	# Plot Classifiers
 	axs1[0].contour(med_ab_x, med_ab_y, MED_ab, levels=[0], colors="black")
 	axs1[0].contour(ged_ab_x, ged_ab_y, GED_ab, levels=[0], colors="red")
-	#axs1[0].contour(map_ab_x, map_ab_y, MAP_ab, colors="green")
+	# axs1[0].contour(map_ab_x, map_ab_y, MAP_ab, colors="green")
 	axs1[0].legend(["Class A", "Class B"])
 
 	# Plot C, D, E
@@ -57,9 +56,8 @@ if __name__ == "__main__":
 	# Plot Classifiers
 	axs1[1].contour(med_cde_x, med_cde_y, MED_cde, colors="black")
 	axs1[1].contour(ged_cde_x, ged_cde_y, GED_cde, colors="red")
-	#axs1[1].contour(map_cde_x, map_cde_y, MAP_cde, colors="green")
+	# axs1[1].contour(map_cde_x, map_cde_y, MAP_cde, colors="green")
 	axs1[1].legend(["Class C", "Class D", "Class E"])
-
 
 	############## --- Plot 2 --- ##############
 	print('\n---------------------- Plot 2 ----------------------')
@@ -100,10 +98,9 @@ if __name__ == "__main__":
 	axs2[1].contour(knn_cde_x, knn_cde_y, KNN_cde, colors="black")
 	axs2[1].legend(["Class C", "Class D", "Class E"])
 
-
 	########## --- Error Analysis --- ##########
 	print('\n------------------ Error Analysis ------------------')
-	
+
 	# Making an array of 1s for all points in class A and an array of 2s for all points in class B
 	# points contains all the actual values for class A and B
 	points_a = [1 for x in a.cluster]
@@ -131,8 +128,8 @@ if __name__ == "__main__":
 	c_matrix_med3, med3_error_rate = error_calc.med3_error(c, d, e, points_cde)
 	c_matrix_ged2, ged2_error_rate = error_calc.ged2_error(a, b, points_ab)
 	c_matrix_ged3, ged3_error_rate = error_calc.ged3_error(c, d, e, points_cde)
-	#c_matrix_map2, map2_error_rate = error_calc.map2_error(a, b, points_ab)
-	#c_matrix_map3, map3_error_rate = error_calc.map3_error(c, d, e, points_cde)
+	# c_matrix_map2, map2_error_rate = error_calc.map2_error(a, b, points_ab)
+	# c_matrix_map3, map3_error_rate = error_calc.map3_error(c, d, e, points_cde)
 	c_matrix_nn2, nn2_error_rate = error_calc.nn2_test_error(a, b, testing_points_ab)
 	c_matrix_nn3, nn3_error_rate = error_calc.nn3_test_error(c, d, e, testing_points_cde)
 	c_matrix_knn2, knn2_error_rate = error_calc.knn2_test_error(a, b, testing_points_ab)
@@ -163,16 +160,16 @@ if __name__ == "__main__":
 	print("Error Rate GED3 = {:.3f}".format(ged3_error_rate))
 
 	# Print Confusion Matrix for MAP2
-	#print("\nConfusion Matrix MAP2: \n {}".format(c_matrix_map2))
+	# print("\nConfusion Matrix MAP2: \n {}".format(c_matrix_map2))
 
 	# Print Error Rate for MAP2
-	#print("Error Rate MAP2 = {:.3f}".format(map2_error_rate))
+	# print("Error Rate MAP2 = {:.3f}".format(map2_error_rate))
 
 	# Print Confusion Matrix for MAP3
-	#print("\nConfusion Matrix MAP3: \n {}".format(c_matrix_map3))
+	# print("\nConfusion Matrix MAP3: \n {}".format(c_matrix_map3))
 
 	# Print Error Rate for MAP3
-	#print("Error Rate MAP3 = {:.3f}".format(map3_error_rate))
+	# print("Error Rate MAP3 = {:.3f}".format(map3_error_rate))
 
 	# Print Confusion Matrix for NN2
 	print("\nConfusion Matrix NN2: \n {}".format(c_matrix_nn2))
@@ -197,7 +194,6 @@ if __name__ == "__main__":
 
 	# Print Error Rate for KNN3
 	print("Error Rate KNN3 = {:.3f}".format(knn3_error_rate))
-
 
 	# Show plots
 	plt.show()
