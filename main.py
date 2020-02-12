@@ -255,7 +255,7 @@ class classifier:
 		print('Calculating NN2 for testing data...')
 		num_steps = 100
 
-		# Create Mesh grid
+		#Create Mesh grid
 		x_grid = np.linspace(min(*a.testing_cluster[:, 0], *b.testing_cluster[:, 0]) - 1, max(*a.testing_cluster[:, 0], *b.testing_cluster[:, 0]) + 1,
 							 num_steps)
 		y_grid = np.linspace(min(*a.testing_cluster[:, 1], *b.testing_cluster[:, 1]) - 1, max(*a.testing_cluster[:, 1], *b.testing_cluster[:, 1]) + 1,
@@ -286,7 +286,7 @@ class classifier:
 
 			# Print progress
 			sys.stdout.write('\r')
-			sys.stdout.write('Rows: {0:4}/{1:4}'.format(i + 1, num_steps))
+			sys.stdout.write('Rows: {0:4}/{1:4}'.format(i + 1, len(nn2_cm_boundary)))
 
 		print('... completed.')
 		return [boundary, nn2_cm_boundary, x_grid, y_grid]
@@ -384,7 +384,7 @@ class classifier:
 
 				# Print progress
 				sys.stdout.write('\r')
-				sys.stdout.write('Rows: {0:4}/{1:4}'.format(i + 1, num_steps))
+				sys.stdout.write('Rows: {0:4}/{1:4}'.format(i + 1, len(nn3_cm_boundary)))
 
 		print('... completed.')
 		return [boundary, nn3_cm_boundary, x_grid, y_grid]
@@ -430,6 +430,52 @@ class classifier:
 
 		print('... completed.')
 		return [boundary, x_grid, y_grid]
+	
+	@staticmethod
+	def knn2_test(a, b):
+		print('Calculating KNN2 for testing data...')
+		num_steps = 100
+
+		# Create Mesh grid
+		x_grid = np.linspace(min(*a.testing_cluster[:, 0], *b.testing_cluster[:, 0]) - 1, max(*a.testing_cluster[:, 0], *b.testing_cluster[:, 0]) + 1,
+							 num_steps)
+		y_grid = np.linspace(min(*a.testing_cluster[:, 1], *b.testing_cluster[:, 1]) - 1, max(*a.testing_cluster[:, 1], *b.testing_cluster[:, 1]) + 1,
+							 num_steps)
+
+		x0, y0 = np.meshgrid(x_grid, y_grid)
+		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
+		knn2_cm_boundary = [0 for _ in range(len(a.testing_cluster) + len(b.testing_cluster))]
+
+		points_ab = np.concatenate([a.testing_cluster, b.testing_cluster])
+		for i, point in enumerate(points_ab):
+				# Find nearest neighbours
+				a_group = [float('inf') for _ in range(4)]
+				for coord in a.cluster:
+					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], point[0], point[1])
+					if temp_dist < max(a_group):
+						a_group[a_group.index(max(a_group))] = temp_dist
+
+				a_dist = np.mean(a_group)
+
+				b_group = [float('inf') for _ in range(4)]
+				for coord in b.cluster:
+					temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], point[0], point[1])
+					if temp_dist < max(b_group):
+						b_group[b_group.index(max(b_group))] = temp_dist
+
+				b_dist = np.mean(b_group)
+
+				if min(a_dist, b_dist) == a_dist:
+					knn2_cm_boundary[i] = 1
+				else:
+					knn2_cm_boundary[i] = 2
+
+				# Print progress
+				sys.stdout.write('\r')
+				sys.stdout.write('Rows: {0:4}/{1:4}'.format(i + 1, len(knn2_cm_boundary)))
+
+		print('... completed.')
+		return [boundary, knn2_cm_boundary, x_grid, y_grid]
 
 	@staticmethod
 	def create_knn3(c, d, e):
@@ -485,6 +531,63 @@ class classifier:
 
 		print('... completed.')
 		return [boundary, x_grid, y_grid]
+	
+	@staticmethod
+	def knn3_test(c, d, e):
+		print('Calculating KNN3 for testing data...')
+		num_steps = 100
+
+		# Create Mesh grid
+		x_grid = np.linspace(min(*c.testing_cluster[:, 0], *d.testing_cluster[:, 0], *e.testing_cluster[:, 0]) - 1,
+							 max(*c.testing_cluster[:, 0], *d.testing_cluster[:, 0], *e.testing_cluster[:, 0]) + 1, num_steps)
+		y_grid = np.linspace(min(*c.testing_cluster[:, 1], *d.testing_cluster[:, 1], *e.testing_cluster[:, 1]) - 1,
+							 max(*c.testing_cluster[:, 1], *d.testing_cluster[:, 1], *e.testing_cluster[:, 1]) + 1, num_steps)
+
+		x0, y0 = np.meshgrid(x_grid, y_grid)
+		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
+		knn3_cm_boundary = [0 for _ in range(len(c.testing_cluster) + len(d.testing_cluster) + len(e.testing_cluster))]
+
+		points_cde = np.concatenate([c.testing_cluster, d.testing_cluster, e.testing_cluster])
+		
+		for i, point in enumerate(points_cde):
+			# Find nearest neighbours
+			c_group = [float('inf') for _ in range(4)]
+			for coord in c.cluster:
+				temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], point[0], point[1])
+				if temp_dist < max(c_group):
+					c_group[c_group.index(max(c_group))] = temp_dist
+
+			c_dist = np.mean(c_group)
+
+			d_group = [float('inf') for _ in range(4)]
+			for coord in d.cluster:
+				temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], point[0], point[1])
+				if temp_dist < max(d_group):
+					d_group[d_group.index(max(d_group))] = temp_dist
+
+			d_dist = np.mean(d_group)
+
+			e_group = [float('inf') for _ in range(4)]
+			for coord in e.cluster:
+				temp_dist = classifier.get_euclidean_dist(coord[0], coord[1], point[0], point[1])
+				if temp_dist < max(e_group):
+					e_group[e_group.index(max(e_group))] = temp_dist
+
+			e_dist = np.mean(e_group)
+
+			if min(c_dist, d_dist, e_dist) == c_dist:
+				knn3_cm_boundary[i] = 1
+			elif min(c_dist, d_dist, e_dist) == d_dist:
+				knn3_cm_boundary[i] = 2
+			else:
+				knn3_cm_boundary[i] = 3
+
+				# Print progress
+			sys.stdout.write('\r')
+			sys.stdout.write('Rows: {0:4}/{1:4}'.format(i + 1, len(knn3_cm_boundary)))
+
+		print('... completed.')
+		return [boundary, knn3_cm_boundary, x_grid, y_grid]
 
 	@staticmethod
 	def create_map2(a, b):
@@ -577,7 +680,9 @@ if __name__ == "__main__":
 
 	# Determine KNN classifiers
 	KNN_ab, knn_ab_x, knn_ab_y = classifier.create_knn2(a, b)
+	KNN_ab, knn2_cm_boundary, knn_ab_x, knn_ab_y = classifier.knn2_test(a, b)
 	KNN_cde, knn_cde_x, knn_cde_y = classifier.create_knn3(c, d, e)
+	KNN_cde, knn3_cm_boundary, knn_cde_x, knn_cde_y = classifier.knn3_test(c, d, e)
 
 	# Create scatters and set appearance for NN, and 5NN
 	fig2, axs2 = plt.subplots(1, 2, figsize=(20, 10), subplot_kw={'aspect': 1})
@@ -671,4 +776,20 @@ if __name__ == "__main__":
 	#Calculate Error Rate for NN3
 	nn3_error_rate = 1 - (accuracy_score(points_cde, nn3_cm_boundary, normalize=True)) #error rate = 1 - accuracy score
 	print("Error Rate NN3 = {}".format(nn3_error_rate))
+
+	#Confusion Matrix for KNN2
+	c_matrix_knn2 = confusion_matrix(points_ab, knn2_cm_boundary)
+	print("Confusion Matrix KNN2: \n {}".format(c_matrix_nn2))
+
+	#Calculate Error Rate for KNN2
+	knn2_error_rate = 1 - (accuracy_score(points_ab, knn2_cm_boundary, normalize=True)) #error rate = 1 - accuracy score
+	print("Error Rate KNN2 = {}".format(knn2_error_rate))
+
+	#Confusion Matrix for KNN3
+	c_matrix_knn3 = confusion_matrix(points_cde, knn3_cm_boundary)
+	print("Confusion Matrix KNN3: \n {}".format(c_matrix_knn3))
+
+	#Calculate Error Rate for KNN3
+	knn3_error_rate = 1 - (accuracy_score(points_cde, knn3_cm_boundary, normalize=True)) #error rate = 1 - accuracy score
+	print("Error Rate KNN3 = {}".format(knn3_error_rate))
 
