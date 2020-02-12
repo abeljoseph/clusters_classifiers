@@ -216,6 +216,7 @@ class classifier:
 					   1 if (c_marg / e_marg) > (p_e / p_c) else 3,
 					   2 if (d_marg / e_marg) > (p_e / p_d) else 3]
 
+				print(c_marg, d_marg, e_marg, res)  # TODO: REMOVE
 				boundary[i][j] = mode(res)
 
 				# Print progress
