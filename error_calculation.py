@@ -128,6 +128,22 @@ class error_calc:
 
 
 	@staticmethod
+	def map2_error(a, b, points_ab):
+		boundary = [0 for _ in range(len(a.testing_cluster) + len(b.testing_cluster))]
+		points = np.concatenate([a.testing_cluster, b.testing_cluster])
+
+		#TODO
+
+
+	@staticmethod
+	def map3_error(c, d, e, points_cde):
+		boundary = [0 for _ in range(len(c.cluster) + len(d.cluster) + len(e.cluster))]
+		points = np.concatenate([c.cluster, d.cluster, e.cluster])
+
+		#TODO
+
+
+	@staticmethod
 	def nn2_test_error(a, b, testing_points_ab):
 		boundary = [0 for _ in range(len(a.testing_cluster) + len(b.testing_cluster))]
 		points = np.concatenate([a.testing_cluster, b.testing_cluster])
