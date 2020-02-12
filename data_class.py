@@ -3,7 +3,7 @@ import numpy as np
 from math import pi, sqrt
 
 
-class data_class_:
+class data_class:
 	def __init__(self, n, mean, covariance):
 		self.covariance = covariance
 		self.mean = mean

@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import sys
 
-from math import pi, sqrt
+from math import pi, sqrt, exp
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 
@@ -136,7 +136,6 @@ class classifier:
 
 	@staticmethod
 	def create_map2(a, b):
-		print('Calculating MAP2...', end=" ")
 		num_steps = 100
 		# Create Mesh grid
 		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1,
@@ -151,7 +150,28 @@ class classifier:
 		p_a = a.n / (a.n + b.n)
 		p_b = b.n / (a.n + b.n)
 
-	# Calculate marginal of a and b
+		threshold = p_b / p_a
+
+		# Get the marginal given a class
+		def get_marg(cl, coord):
+			coord_mean_diff = (np.subtract(coord, cl.mean))
+			mult = np.matmul(np.transpose(coord_mean_diff), (np.matmul(np.linalg.inv(cl.covariance), coord_mean_diff)))
+			return (1 / (((2 * pi) ** (cl.n / 2)) * sqrt(np.linalg.det(cl.covariance)))) * exp((-1 / 2) * mult)
+
+		for i in range(num_steps):
+			for j in range(num_steps):
+				coord = [x0[i][j], y0[i][j]]
+				a_marg = get_marg(a, coord)
+				b_marg = get_marg(b, coord)
+
+				boundary[i][j] = 1 if (a_marg / b_marg) > (p_b / p_a) else 2
+
+				# Print progress
+				sys.stdout.write('\r')
+				sys.stdout.write('Calculating MAP2... Row: {0:4}/{1:4}'.format(i + 1, num_steps))
+
+		print('... completed.')
+		return [boundary, x_grid, y_grid]
 
 	@staticmethod
 	def create_map3(c, d, e):

@@ -1,16 +1,16 @@
 import matplotlib.pyplot as plt
 
-from data_class import data_class_
+from data_class import data_class
 from classifiers import classifier
 from error_calculation import error_calc
 
 if __name__ == "__main__":
 	# Instantiate classes
-	a = data_class_(n=200, mean=[5, 10], covariance=[[8, 0], [0, 4]])
-	b = data_class_(n=200, mean=[10, 15], covariance=[[8, 0], [0, 4]])
-	c = data_class_(n=100, mean=[5, 10], covariance=[[8, 4], [4, 40]])
-	d = data_class_(n=200, mean=[15, 10], covariance=[[8, 0], [0, 8]])
-	e = data_class_(n=150, mean=[10, 5], covariance=[[10, -5], [-5, 20]])
+	a = data_class(n=200, mean=[5, 10], covariance=[[8, 0], [0, 4]])
+	b = data_class(n=200, mean=[10, 15], covariance=[[8, 0], [0, 4]])
+	c = data_class(n=100, mean=[5, 10], covariance=[[8, 4], [4, 40]])
+	d = data_class(n=200, mean=[15, 10], covariance=[[8, 0], [0, 8]])
+	e = data_class(n=150, mean=[10, 5], covariance=[[10, -5], [-5, 20]])
 
 	class_list = [a, b, c, d, e]
 
@@ -25,7 +25,7 @@ if __name__ == "__main__":
 	GED_cde, ged_cde_x, ged_cde_y = classifier.create_ged3(c, d, e)
 
 	# Determine MAP classifiers
-	# MAP_ab, map_ab_x, map_ab_y = classifier.create_map2(a, b)
+	MAP_ab, map_ab_x, map_ab_y = classifier.create_map2(a, b)
 	# MAP_cde, map_cde_x, map_cde_y = classifier.create_map3(c, d, e)
 
 	# Create scatters and set appearance for MED, GED, and MAP
@@ -44,7 +44,7 @@ if __name__ == "__main__":
 	# Plot Classifiers
 	axs1[0].contour(med_ab_x, med_ab_y, MED_ab, levels=[0], colors="black")
 	axs1[0].contour(ged_ab_x, ged_ab_y, GED_ab, levels=[0], colors="red")
-	# axs1[0].contour(map_ab_x, map_ab_y, MAP_ab, colors="green")
+	axs1[0].contour(map_ab_x, map_ab_y, MAP_ab, colors="green")
 	axs1[0].legend(["Class A", "Class B"])
 
 	# Plot C, D, E
