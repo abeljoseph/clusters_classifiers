@@ -1,10 +1,7 @@
 import numpy as np
-import matplotlib.pyplot as plt
-import sys
 
 from math import pi, sqrt
-from sklearn.metrics import confusion_matrix
-from sklearn.metrics import accuracy_score
+
 
 class data_class_:
 	def __init__(self, n, mean, covariance):

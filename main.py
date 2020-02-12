@@ -1,14 +1,12 @@
-import numpy as np
 import matplotlib.pyplot as plt
-import sys
 
-from math import pi, sqrt
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 
 from data_class import data_class_
 from classifiers import classifier
 from error_calculation import error_calc
+
 
 if __name__ == "__main__":
 	# Instantiate classes
@@ -98,8 +96,6 @@ if __name__ == "__main__":
 	axs2[1].contour(nn_cde_x, nn_cde_y, NN_cde, colors="red")
 	axs2[1].contour(knn_cde_x, knn_cde_y, KNN_cde, colors="black")
 	axs2[1].legend(["Class C", "Class D", "Class E"])
-
-	plt.show()
 
 
 	########## --- Error Analysis --- ##########
@@ -201,3 +197,6 @@ if __name__ == "__main__":
 	knn3_error_rate = 1 - (accuracy_score(testing_points_cde, knn3_cm_boundary, normalize=True)) #error rate = 1 - accuracy score
 	print("Error Rate KNN3 = {}".format(knn3_error_rate))
 
+
+	# Show plots
+	plt.show()
