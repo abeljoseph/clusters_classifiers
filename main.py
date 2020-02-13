@@ -48,7 +48,7 @@ if __name__ == "__main__":
 	contour_MAP_ab = axs1[0].contour(map_ab_x, map_ab_y, MAP_ab, levels=[0], colors="green")
 
 	handles_AB = [Rectangle((0, 0), 1, 1, color="C0"), Rectangle((0, 0), 1, 1, color="C1"),
-				  contour_MED_ab.collections[0], contour_GED_ab.collections[0]]
+				  contour_MED_ab.collections[0], contour_GED_ab.collections[0], contour_MAP_ab.collections[0]]
 	labels_AB = ['Class A', 'Class B', 'MED Classifier', 'GED Classifier', 'MAP Classifier']
 
 	axs1[0].legend(handles_AB, labels_AB)
@@ -65,7 +65,8 @@ if __name__ == "__main__":
 	contour_MAP_cde = axs1[1].contour(map_cde_x, map_cde_y, MAP_cde, colors="green")
 
 	handles_CDE = [Rectangle((0, 0), 1, 1, color="C0"), Rectangle((0, 0), 1, 1, color="C1"),
-				   Rectangle((0, 0), 1, 1, color="C2"), contour_MED_cde.collections[0], contour_GED_cde.collections[0]]
+				   Rectangle((0, 0), 1, 1, color="C2"), contour_MED_cde.collections[0], contour_GED_cde.collections[0],
+				   contour_MAP_cde.collections[0]]
 	labels_CDE = ['Class C', 'Class D', 'Class E', 'MED Classifier', 'GED Classifier', 'MAP Classifier']
 
 	axs1[1].legend(handles_CDE, labels_CDE)
