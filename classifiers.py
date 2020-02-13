@@ -153,7 +153,7 @@ class classifier:
 	@staticmethod
 	def create_map2(a, b):
 		start_time = time.time()
-		num_steps = 100
+		num_steps = 200
 		
 		# Create Mesh grid
 		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1,
@@ -164,11 +164,7 @@ class classifier:
 		x0, y0 = np.meshgrid(x_grid, y_grid)
 		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
 
-		# Calculate P(a) and P(b)
-		p_a = a.n / (a.n + b.n)
-		p_b = b.n / (a.n + b.n)
-
-		threshold = p_b / p_a
+		threshold = b.n / a.n
 
 		for i in range(num_steps):
 			for j in range(num_steps):
@@ -189,7 +185,7 @@ class classifier:
 	@staticmethod
 	def create_map3(c, d, e):
 		start_time = time.time()
-		num_steps = 100
+		num_steps = 200
 
 		# Create Mesh grid
 		x_grid = np.linspace(min(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) - 1,
@@ -199,11 +195,6 @@ class classifier:
 
 		x0, y0 = np.meshgrid(x_grid, y_grid)
 		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
-
-		# Calculate P(c), P(d) and P(e)
-		p_c = c.n / (c.n + d.n + e.n)
-		p_d = d.n / (c.n + d.n + e.n)
-		p_e = e.n / (c.n + d.n + e.n)
 
 		for i in range(num_steps):
 			for j in range(num_steps):
@@ -215,18 +206,18 @@ class classifier:
 				res = []
 
 				# Compare classes C and D
-				if (c_marg / d_marg) > (p_d / p_c):
+				if (c_marg / d_marg) > (d.n / c.n):
 					res.append(1)
 				else:
 					res.append(2)
 
 				# Compare classes C and E
-				if (c_marg / e_marg) > (p_e / p_c):
+				if (c_marg / e_marg) > (e.n / c.n):
 					res.append(1)
 				else:
 					res.append(3)
 
-				if (d_marg / e_marg) > (p_e / p_d):
+				if (d_marg / e_marg) > (e.n / d.n):
 					res.append(2)
 				else:
 					res.append(3)
