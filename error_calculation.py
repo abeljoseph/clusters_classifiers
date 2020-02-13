@@ -135,10 +135,39 @@ class error_calc:
 
 	@staticmethod
 	def map2_error(a, b, points_ab):
-		boundary = [0 for _ in range(len(a.testing_cluster) + len(b.testing_cluster))]
-		points = np.concatenate([a.testing_cluster, b.testing_cluster])
+		boundary = [0 for _ in range(len(a.cluster) + len(b.cluster))]
+		points = np.concatenate([a.cluster, b.cluster])
 
-	# TODO
+		# Calculate P(a) and P(b)
+		p_a = a.n / (a.n + b.n)
+		p_b = b.n / (a.n + b.n)
+
+		threshold = p_b / p_a
+
+		# Get the marginal given a class
+		def get_marg(cl, point):
+			point_mean_diff = (np.subtract(point, cl.mean))
+			mult = np.matmul(np.transpose(point_mean_diff), (np.matmul(np.linalg.inv(cl.covariance), point_mean_diff)))
+			return (1 / (((2 * pi) ** (cl.n / 2)) * sqrt(np.linalg.det(cl.covariance)))) * exp((-1 / 2) * mult)
+
+		for i, point in enumerate(points):
+				a_marg = get_marg(a, point)
+				b_marg = get_marg(b, point)
+
+				boundary[i] = 1 if (a_marg / b_marg) > (p_b / p_a) else 2
+
+				# Print progress
+				sys.stdout.write('\r')
+				sys.stdout.write('Calculating MAP2 error... Row: {0:4}/{1:4}'.format(i + 1, len(boundary)))
+
+		# Confusion Matrix for MAP2
+		c_matrix = confusion_matrix(points_ab, boundary)
+
+		# Calculate Error Rate for MAP2
+		error_rate = 1 - (accuracy_score(points_ab, boundary, normalize=True))  # error rate = 1 - accuracy score
+
+		print('... completed.')
+		return c_matrix, error_rate
 
 	@staticmethod
 	def map3_error(c, d, e, points_cde):
