@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import sys
 import time
 
-from math import pi, sqrt
+from math import pi, sqrt, exp
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 
