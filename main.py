@@ -115,7 +115,8 @@ if __name__ == "__main__":
 	contour_kNN_cde = axs2[1].contour(knn_cde_x, knn_cde_y, KNN_cde, colors="black")
 
 	handles_NN_cde = [Rectangle((0, 0), 1, 1, color="C0"), Rectangle((0, 0), 1, 1, color="C1"),
-				   Rectangle((0, 0), 1, 1, color="C2"), contour_NN_cde.collections[0], contour_kNN_cde.collections[0]]
+					  Rectangle((0, 0), 1, 1, color="C2"), contour_NN_cde.collections[0],
+					  contour_kNN_cde.collections[0]]
 	labels_NN_cde = ['Class C', 'Class D', 'Class E', 'NN Classifier', 'kNN Classifier']
 
 	axs2[1].legend(handles_CDE, labels_NN_cde)
@@ -182,16 +183,16 @@ if __name__ == "__main__":
 	print("Error Rate GED3 = {:.3f}".format(ged3_error_rate))
 
 	# Print Confusion Matrix for MAP2
-	#print("\nConfusion Matrix MAP2: \n {}".format(c_matrix_map2))
+	# print("\nConfusion Matrix MAP2: \n {}".format(c_matrix_map2))
 
 	# Print Error Rate for MAP2
-	#print("Error Rate MAP2 = {:.3f}".format(map2_error_rate))
+	# print("Error Rate MAP2 = {:.3f}".format(map2_error_rate))
 
 	# Print Confusion Matrix for MAP3
-	#print("\nConfusion Matrix MAP3: \n {}".format(c_matrix_map3))
+	# print("\nConfusion Matrix MAP3: \n {}".format(c_matrix_map3))
 
 	# Print Error Rate for MAP3
-	#print("Error Rate MAP3 = {:.3f}".format(map3_error_rate))
+	# print("Error Rate MAP3 = {:.3f}".format(map3_error_rate))
 
 	# Print Confusion Matrix for NN2
 	print("\nConfusion Matrix NN2: \n {}".format(c_matrix_nn2))

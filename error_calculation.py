@@ -145,14 +145,14 @@ class error_calc:
 		threshold = p_b / p_a
 
 		for i, point in enumerate(points):
-				a_marg = classifier.get_marg(a, point)
-				b_marg = classifier.get_marg(b, point)
+			a_marg = classifier.get_marg(a, point)
+			b_marg = classifier.get_marg(b, point)
 
-				boundary[i] = 1 if (a_marg / b_marg) > (p_b / p_a) else 2
+			boundary[i] = 1 if (a_marg / b_marg) > (p_b / p_a) else 2
 
-				# Print progress
-				sys.stdout.write('\r')
-				sys.stdout.write('Calculating MAP2 error... Row: {0:4}/{1:4}'.format(i + 1, len(boundary)))
+			# Print progress
+			sys.stdout.write('\r')
+			sys.stdout.write('Calculating MAP2 error... Row: {0:4}/{1:4}'.format(i + 1, len(boundary)))
 
 		# Confusion Matrix for MAP2
 		c_matrix = confusion_matrix(points_ab, boundary)
@@ -187,7 +187,7 @@ class error_calc:
 			# Print progress
 			sys.stdout.write('\r')
 			sys.stdout.write('Calculating MAP3 error... Row: {0:4}/{1:4}'.format(i + 1, len(boundary)))
-		
+
 		# Confusion Matrix for MAP3
 		c_matrix = confusion_matrix(points_cde, boundary)
 

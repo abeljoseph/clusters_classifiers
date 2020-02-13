@@ -1,12 +1,8 @@
 import numpy as np
-import matplotlib.pyplot as plt
 import sys
 import time
 
-from math import pi, sqrt, exp
-from statistics import mode
-from sklearn.metrics import confusion_matrix
-from sklearn.metrics import accuracy_score
+from math import sqrt
 
 
 class classifier:
@@ -145,10 +141,8 @@ class classifier:
 		return [boundary, x_grid, y_grid]
 
 	@staticmethod
-	def create_map2(a, b):
-		start_time = time.time()
-		num_steps = 500
-		
+	def get_map2(a, b, num_steps):
+
 		# Create Mesh grid
 		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1,
 							 num_steps)
@@ -172,8 +166,22 @@ class classifier:
 		for i in range(num_steps):
 			for j in range(num_steps):
 				coord = [x0[i][j], y0[i][j]]
-				dist = np.matmul(np.matmul(coord, Q0), np.array(coord).T) + np.matmul(Q1, np.array(coord).T) + Q2 + 2*Q3+ Q4
+				dist = np.matmul(np.matmul(coord, Q0), np.array(coord).T) + np.matmul(Q1, np.array(
+					coord).T) + Q2 + 2 * Q3 + Q4
 				boundary[i][j] = dist
+
+		return [boundary, x_grid, y_grid]
+
+	@staticmethod
+	def create_map2(a, b):
+		start_time = time.time()
+		num_steps = 500
+
+		boundary, x_grid, y_grid = classifier.get_map2(a, b, num_steps)
+
+		for i in range(num_steps):
+			for j in range(num_steps):
+				boundary[i][j] = 1 if boundary[i][j] < 0 else 2
 
 				# Print progress
 				sys.stdout.write('\r')
@@ -197,9 +205,9 @@ class classifier:
 		x0, y0 = np.meshgrid(x_grid, y_grid)
 		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
 
-		boundary_cd = classifier.create_map2(c, d)[0]
-		boundary_ce = classifier.create_map2(c, e)[0]
-		boundary_de = classifier.create_map2(d, e)[0]
+		boundary_cd = classifier.get_map2(c, d, num_steps)[0]
+		boundary_ce = classifier.get_map2(c, e, num_steps)[0]
+		boundary_de = classifier.get_map2(d, e, num_steps)[0]
 
 		for i in range(num_steps):
 			for j in range(num_steps):
