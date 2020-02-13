@@ -169,12 +169,7 @@ class classifier:
 
 		threshold = p_b / p_a
 
-		# Get the marginal given a class
-		def get_marg(cl, coord):
 			coord_mean_diff = (np.subtract(coord, cl.mean))
-			mult = np.matmul(np.transpose(coord_mean_diff), (np.matmul(np.linalg.inv(cl.covariance), coord_mean_diff)))
-			return (1 / (((2 * pi) ** (cl.n / 2)) * sqrt(np.linalg.det(cl.covariance)))) * exp((-1 / 2) * mult)
-
 		for i in range(num_steps):
 			for j in range(num_steps):
 				coord = [x0[i][j], y0[i][j]]

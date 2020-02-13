@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
+import time
 
 from math import pi, sqrt
 from sklearn.metrics import confusion_matrix
@@ -12,6 +13,7 @@ from classifiers import classifier
 class error_calc:
 	@staticmethod
 	def med2_error(a, b, points_ab):
+		start_time = time.time()
 		boundary = [0 for _ in range(len(a.cluster) + len(b.cluster))]
 		points = np.concatenate([a.cluster, b.cluster])
 
@@ -34,11 +36,13 @@ class error_calc:
 		# Error Rate of MED2
 		error_rate = 1 - (accuracy_score(points_ab, boundary, normalize=True))  # error rate = 1 - accuracy score
 
-		print('... completed.')
+		end_time = time.time()
+		print('... completed ({:9.4f} seconds).'.format(end_time - start_time))
 		return c_matrix, error_rate
 
 	@staticmethod
 	def med3_error(c, d, e, points_cde):
+		start_time = time.time()
 		boundary = [0 for _ in range(len(c.cluster) + len(d.cluster) + len(e.cluster))]
 		points = np.concatenate([c.cluster, d.cluster, e.cluster])
 
@@ -64,11 +68,13 @@ class error_calc:
 		# Calculate Error Rate for MED3
 		error_rate = 1 - (accuracy_score(points_cde, boundary, normalize=True))  # error rate = 1 - accuracy score
 
-		print('... completed.')
+		end_time = time.time()
+		print('... completed ({:9.4f} seconds).'.format(end_time - start_time))
 		return c_matrix, error_rate
 
 	@staticmethod
 	def ged2_error(a, b, points_ab):
+		start_time = time.time()
 		boundary = [0 for _ in range(len(a.cluster) + len(b.cluster))]
 		points = np.concatenate([a.cluster, b.cluster])
 
@@ -91,11 +97,13 @@ class error_calc:
 		# Calculate Error Rate for GED2
 		error_rate = 1 - (accuracy_score(points_ab, boundary, normalize=True))  # error rate = 1 - accuracy score
 
-		print('... completed.')
+		end_time = time.time()
+		print('... completed ({:9.4f} seconds).'.format(end_time - start_time))
 		return c_matrix, error_rate
 
 	@staticmethod
 	def ged3_error(c, d, e, points_cde):
+		start_time = time.time()
 		boundary = [0 for _ in range(len(c.cluster) + len(d.cluster) + len(e.cluster))]
 		points = np.concatenate([c.cluster, d.cluster, e.cluster])
 
@@ -121,7 +129,8 @@ class error_calc:
 		# Calculate Error Rate for GED3
 		error_rate = 1 - (accuracy_score(points_cde, boundary, normalize=True))  # error rate = 1 - accuracy score
 
-		print('... completed.')
+		end_time = time.time()
+		print('... completed ({:9.4f} seconds).'.format(end_time - start_time))
 		return c_matrix, error_rate
 
 	@staticmethod
@@ -140,6 +149,7 @@ class error_calc:
 
 	@staticmethod
 	def nn2_test_error(a, b, testing_points_ab):
+		start_time = time.time()
 		boundary = [0 for _ in range(len(a.testing_cluster) + len(b.testing_cluster))]
 		points = np.concatenate([a.testing_cluster, b.testing_cluster])
 
@@ -169,14 +179,15 @@ class error_calc:
 		c_matrix = confusion_matrix(testing_points_ab, boundary)
 
 		# Calculate Error Rate for NN2
-		error_rate = 1 - (
-			accuracy_score(testing_points_ab, boundary, normalize=True))  # error rate = 1 - accuracy score
+		error_rate = 1 - (accuracy_score(testing_points_ab, boundary, normalize=True))  # error rate = 1 - accuracy score
 
-		print('... completed.')
+		end_time = time.time()
+		print('... completed ({:9.4f} seconds).'.format(end_time - start_time))
 		return c_matrix, error_rate
 
 	@staticmethod
 	def nn3_test_error(c, d, e, testing_points_cde):
+		start_time = time.time()
 		boundary = [0 for _ in range(len(c.testing_cluster) + len(d.testing_cluster) + len(e.testing_cluster))]
 		points = np.concatenate([c.testing_cluster, d.testing_cluster, e.testing_cluster])
 
@@ -215,14 +226,15 @@ class error_calc:
 		c_matrix = confusion_matrix(testing_points_cde, boundary)
 
 		# Calculate Error Rate for NN3
-		error_rate = 1 - (
-			accuracy_score(testing_points_cde, boundary, normalize=True))  # error rate = 1 - accuracy score
+		error_rate = 1 - (accuracy_score(testing_points_cde, boundary, normalize=True))  # error rate = 1 - accuracy score
 
-		print('... completed.')
+		end_time = time.time()
+		print('... completed ({:9.4f} seconds).'.format(end_time - start_time))
 		return c_matrix, error_rate
 
 	@staticmethod
 	def knn2_test_error(a, b, testing_points_ab):
+		start_time = time.time()
 		boundary = [0 for _ in range(len(a.testing_cluster) + len(b.testing_cluster))]
 		points = np.concatenate([a.testing_cluster, b.testing_cluster])
 
@@ -257,14 +269,15 @@ class error_calc:
 		c_matrix = confusion_matrix(testing_points_ab, boundary)
 
 		# Calculate Error Rate for KNN2
-		error_rate = 1 - (
-			accuracy_score(testing_points_ab, boundary, normalize=True))  # error rate = 1 - accuracy score
+		error_rate = 1 - (accuracy_score(testing_points_ab, boundary, normalize=True))  # error rate = 1 - accuracy score
 
-		print('... completed.')
+		end_time = time.time()
+		print('... completed ({:9.4f} seconds).'.format(end_time - start_time))
 		return c_matrix, error_rate
 
 	@staticmethod
 	def knn3_test_error(c, d, e, testing_points_cde):
+		start_time = time.time()
 		boundary = [0 for _ in range(len(c.testing_cluster) + len(d.testing_cluster) + len(e.testing_cluster))]
 		points = np.concatenate([c.testing_cluster, d.testing_cluster, e.testing_cluster])
 
@@ -309,8 +322,8 @@ class error_calc:
 		c_matrix = confusion_matrix(testing_points_cde, boundary)
 
 		# Calculate Error Rate for KNN3
-		error_rate = 1 - (
-			accuracy_score(testing_points_cde, boundary, normalize=True))  # error rate = 1 - accuracy score
+		error_rate = 1 - (accuracy_score(testing_points_cde, boundary, normalize=True))  # error rate = 1 - accuracy score
 
-		print('... completed.')
+		end_time = time.time()
+		print('... completed ({:9.4f} seconds).'.format(end_time - start_time))
 		return c_matrix, error_rate
