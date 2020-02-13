@@ -20,12 +20,6 @@ class classifier:
 		return sqrt((px0 - px1) ** 2 + (py0 - py1) ** 2)
 
 	@staticmethod
-	def get_marg(cl, coord):
-		coord_mean_diff = (np.subtract(coord, cl.mean))
-		mult = np.matmul(np.transpose(coord_mean_diff), (np.matmul(np.linalg.inv(cl.covariance), coord_mean_diff)))
-		return (1 / (((2 * pi) ** (cl.n / 2)) * sqrt(np.linalg.det(cl.covariance)))) * exp((-1 / 2) * mult)
-
-	@staticmethod
 	def create_med2(a, b):
 		start_time = time.time()
 		num_steps = 500
@@ -91,7 +85,7 @@ class classifier:
 	@staticmethod
 	def create_ged2(a, b):
 		start_time = time.time()
-		num_steps = 500
+		num_steps = 100
 
 		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1,
 							 num_steps)
@@ -119,7 +113,7 @@ class classifier:
 	@staticmethod
 	def create_ged3(c, d, e):
 		start_time = time.time()
-		num_steps = 500
+		num_steps = 100
 
 		x_grid = np.linspace(min(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) - 1,
 							 max(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) + 1, num_steps)
@@ -164,19 +158,25 @@ class classifier:
 		x0, y0 = np.meshgrid(x_grid, y_grid)
 		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
 
-		threshold = b.n / a.n
+		inv_cov_a = np.linalg.inv(a.covariance)
+		inv_cov_b = np.linalg.inv(b.covariance)
 
-		for i in range(num_steps):
-			for j in range(num_steps):
-				coord = [x0[i][j], y0[i][j]]
-				a_marg = classifier.get_marg(a, coord)
-				b_marg = classifier.get_marg(b, coord)
+		Q0 = np.subtract(inv_cov_a, inv_cov_b)
+		Q1 = 2 * np.subtract(np.matmul(np.array(b.mean).T, inv_cov_b), np.matmul(np.array(a.mean).T, inv_cov_a))
+		Q2 = np.matmul(np.matmul(np.array(a.mean).T, inv_cov_a), a.mean) - np.matmul(np.matmul(np.array(b.mean).T, inv_cov_b), b.mean)
+		Q3 = np.log((b.n / a.n))
+		Q4 = np.log(np.linalg.det(a.covariance) / np.linalg.det(b.covariance))
 
-				boundary[i][j] = 1 if (a_marg / b_marg) > threshold else 2
+		for row, values in enumerate(boundary):
+			for col in values:
+				coord = [x0[row][col], y0[row][col]]
+				dist = np.matmul(np.matmul(np.array(coord).T, Q0), coord) + np.matmul(Q1, coord) + Q2 + 2 * Q3 + Q4
+
+				boundary[row][col] = 1 if dist < 0 else 2
 
 				# Print progress
 				sys.stdout.write('\r')
-				sys.stdout.write('Calculating MAP2... Row: {0:4}/{1:4}'.format(i + 1, num_steps))
+				sys.stdout.write('Calculating MAP2... Row: {0:4}/{1:4}'.format(row + 1, num_steps))
 
 		end_time = time.time()
 		print('... completed ({:9.4f} seconds).'.format(end_time - start_time))
@@ -236,7 +236,7 @@ class classifier:
 	@staticmethod
 	def create_nn2(a, b):
 		start_time = time.time()
-		num_steps = 100
+		num_steps = 50
 
 		# Create Mesh grid
 		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1,
@@ -275,7 +275,7 @@ class classifier:
 	@staticmethod
 	def create_nn3(c, d, e):
 		start_time = time.time()
-		num_steps = 100
+		num_steps = 50
 
 		# Create Mesh grid
 		x_grid = np.linspace(min(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) - 1,
@@ -325,7 +325,7 @@ class classifier:
 	@staticmethod
 	def create_knn2(a, b):
 		start_time = time.time()
-		num_steps = 100
+		num_steps = 50
 
 		# Create Mesh grid
 		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1,
@@ -368,7 +368,7 @@ class classifier:
 	@staticmethod
 	def create_knn3(c, d, e):
 		start_time = time.time()
-		num_steps = 100
+		num_steps = 50
 
 		# Create Mesh grid
 		x_grid = np.linspace(min(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) - 1,

@@ -26,8 +26,8 @@ if __name__ == "__main__":
 	GED_cde, ged_cde_x, ged_cde_y = classifier.create_ged3(c, d, e)
 
 	# Determine MAP classifiers
-	MAP_ab, map_ab_x, map_ab_y = classifier.create_map2(a, b)
-	MAP_cde, map_cde_x, map_cde_y = classifier.create_map3(c, d, e)
+	#MAP_ab, map_ab_x, map_ab_y = classifier.create_map2(a, b)
+	#MAP_cde, map_cde_x, map_cde_y = classifier.create_map3(c, d, e)
 
 	# Create scatters and set appearance for MED, GED, and MAP
 	fig1, axs1 = plt.subplots(1, 2, figsize=(20, 10), subplot_kw={'aspect': 1})
@@ -45,11 +45,11 @@ if __name__ == "__main__":
 	# Plot Classifiers
 	contour_MED_ab = axs1[0].contour(med_ab_x, med_ab_y, MED_ab, levels=[0], colors="black")
 	contour_GED_ab = axs1[0].contour(ged_ab_x, ged_ab_y, GED_ab, levels=[0], colors="red")
-	contour_MAP_ab = axs1[0].contour(map_ab_x, map_ab_y, MAP_ab, levels=[0], colors="green")
+	#contour_MAP_ab = axs1[0].contour(map_ab_x, map_ab_y, MAP_ab, levels=[0], colors="green")
 
 	handles_AB = [Rectangle((0, 0), 1, 1, color="C0"), Rectangle((0, 0), 1, 1, color="C1"),
-				  contour_MED_ab.collections[0], contour_GED_ab.collections[0], contour_MAP_ab.collections[0]]
-	labels_AB = ['Class A', 'Class B', 'MED Classifier', 'GED Classifier', 'MAP Classifier']
+				  contour_MED_ab.collections[0], contour_GED_ab.collections[0]]
+	labels_AB = ['Class A', 'Class B', 'MED Classifier', 'GED Classifier']
 
 	axs1[0].legend(handles_AB, labels_AB)
 
@@ -62,12 +62,11 @@ if __name__ == "__main__":
 	# # Plot Classifiers
 	contour_MED_cde = axs1[1].contour(med_cde_x, med_cde_y, MED_cde, colors="black")
 	contour_GED_cde = axs1[1].contour(ged_cde_x, ged_cde_y, GED_cde, colors="red")
-	contour_MAP_cde = axs1[1].contour(map_cde_x, map_cde_y, MAP_cde, colors="green")
+	# contour_MAP_cde = axs1[1].contour(map_cde_x, map_cde_y, MAP_cde, colors="green")
 
 	handles_CDE = [Rectangle((0, 0), 1, 1, color="C0"), Rectangle((0, 0), 1, 1, color="C1"),
-				   Rectangle((0, 0), 1, 1, color="C2"), contour_MED_cde.collections[0], contour_GED_cde.collections[0],
-				   contour_MAP_cde.collections[0]]
-	labels_CDE = ['Class C', 'Class D', 'Class E', 'MED Classifier', 'GED Classifier', 'MAP Classifier']
+				   Rectangle((0, 0), 1, 1, color="C2"), contour_MED_cde.collections[0], contour_GED_cde.collections[0],]
+	labels_CDE = ['Class C', 'Class D', 'Class E', 'MED Classifier', 'GED Classifier']
 
 	axs1[1].legend(handles_CDE, labels_CDE)
 
@@ -150,8 +149,8 @@ if __name__ == "__main__":
 	c_matrix_med3, med3_error_rate = error_calc.med3_error(c, d, e, points_cde)
 	c_matrix_ged2, ged2_error_rate = error_calc.ged2_error(a, b, points_ab)
 	c_matrix_ged3, ged3_error_rate = error_calc.ged3_error(c, d, e, points_cde)
-	c_matrix_map2, map2_error_rate = error_calc.map2_error(a, b, points_ab)
-	c_matrix_map3, map3_error_rate = error_calc.map3_error(c, d, e, points_cde)
+	# c_matrix_map2, map2_error_rate = error_calc.map2_error(a, b, points_ab)
+	#c_matrix_map3, map3_error_rate = error_calc.map3_error(c, d, e, points_cde)
 	c_matrix_nn2, nn2_error_rate = error_calc.nn2_test_error(a, b, testing_points_ab)
 	c_matrix_nn3, nn3_error_rate = error_calc.nn3_test_error(c, d, e, testing_points_cde)
 	c_matrix_knn2, knn2_error_rate = error_calc.knn2_test_error(a, b, testing_points_ab)
@@ -182,16 +181,16 @@ if __name__ == "__main__":
 	print("Error Rate GED3 = {:.3f}".format(ged3_error_rate))
 
 	# Print Confusion Matrix for MAP2
-	print("\nConfusion Matrix MAP2: \n {}".format(c_matrix_map2))
+	#print("\nConfusion Matrix MAP2: \n {}".format(c_matrix_map2))
 
 	# Print Error Rate for MAP2
-	print("Error Rate MAP2 = {:.3f}".format(map2_error_rate))
+	#print("Error Rate MAP2 = {:.3f}".format(map2_error_rate))
 
 	# Print Confusion Matrix for MAP3
-	print("\nConfusion Matrix MAP3: \n {}".format(c_matrix_map3))
+	#print("\nConfusion Matrix MAP3: \n {}".format(c_matrix_map3))
 
 	# Print Error Rate for MAP3
-	print("Error Rate MAP3 = {:.3f}".format(map3_error_rate))
+	#print("Error Rate MAP3 = {:.3f}".format(map3_error_rate))
 
 	# Print Confusion Matrix for NN2
 	print("\nConfusion Matrix NN2: \n {}".format(c_matrix_nn2))
