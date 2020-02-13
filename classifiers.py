@@ -197,34 +197,18 @@ class classifier:
 		x0, y0 = np.meshgrid(x_grid, y_grid)
 		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
 
+		boundary_cd = classifier.create_map2(c, d)[0]
+		boundary_ce = classifier.create_map2(c, e)[0]
+		boundary_de = classifier.create_map2(d, e)[0]
+
 		for i in range(num_steps):
 			for j in range(num_steps):
-				coord = [x0[i][j], y0[i][j]]
-				c_marg = classifier.get_marg(c, coord)
-				d_marg = classifier.get_marg(d, coord)
-				e_marg = classifier.get_marg(e, coord)
-
-				res = []
-
-				# Compare classes C and D
-				if (c_marg / d_marg) > (d.n / c.n):
-					res.append(1)
-				else:
-					res.append(2)
-
-				# Compare classes C and E
-				if (c_marg / e_marg) > (e.n / c.n):
-					res.append(1)
-				else:
-					res.append(3)
-
-				if (d_marg / e_marg) > (e.n / d.n):
-					res.append(2)
-				else:
-					res.append(3)
-
-				# Point is classified as the mode of res
-				boundary[i][j] = mode(res)
+				if boundary_cd[i][j] >= 0 and boundary_de[i][j] <= 0:
+					boundary[i][j] = 1
+				elif boundary_de[i][j] >= 0 and boundary_ce[i][j] <= 0:
+					boundary[i][j] = 2
+				elif boundary_ce[i][j] >= 0 and boundary_cd[i][j] <= 0:
+					boundary[i][j] = 3
 
 				# Print progress
 				sys.stdout.write('\r')
