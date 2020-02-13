@@ -212,10 +212,26 @@ class classifier:
 				d_marg = classifier.get_marg(d, coord)
 				e_marg = classifier.get_marg(e, coord)
 
-				res = [1 if (c_marg / d_marg) > (p_d / p_c) else 2,
-					   1 if (c_marg / e_marg) > (p_e / p_c) else 3,
-					   2 if (d_marg / e_marg) > (p_e / p_d) else 3]
+				res = []
 
+				# Compare classes C and D
+				if (c_marg / d_marg) > (p_d / p_c):
+					res.append(1)
+				else:
+					res.append(2)
+
+				# Compare classes C and E
+				if (c_marg / e_marg) > (p_e / p_c):
+					res.append(1)
+				else:
+					res.append(3)
+
+				if (d_marg / e_marg) > (p_e / p_d):
+					res.append(2)
+				else:
+					res.append(3)
+
+				# Point is classified as the mode of res
 				boundary[i][j] = mode(res)
 
 				# Print progress
