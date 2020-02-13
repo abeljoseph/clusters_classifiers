@@ -169,7 +169,6 @@ class classifier:
 
 		threshold = p_b / p_a
 
-			coord_mean_diff = (np.subtract(coord, cl.mean))
 		for i in range(num_steps):
 			for j in range(num_steps):
 				coord = [x0[i][j], y0[i][j]]
