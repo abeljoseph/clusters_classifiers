@@ -4,13 +4,20 @@ import sys
 import time
 
 from math import pi, sqrt, exp
+from statistics import mode
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 
 from classifiers import classifier
 
-
 class error_calc:
+
+	@staticmethod
+	def get_marg(cl, point):
+			point_mean_diff = (np.subtract(point, cl.mean))
+			mult = np.matmul(np.transpose(point_mean_diff), (np.matmul(np.linalg.inv(cl.covariance), point_mean_diff)))
+			return (1 / (((2 * pi) ** (cl.n / 2)) * sqrt(np.linalg.det(cl.covariance)))) * exp((-1 / 2) * mult)
+
 	@staticmethod
 	def med2_error(a, b, points_ab):
 		start_time = time.time()
@@ -171,10 +178,39 @@ class error_calc:
 
 	@staticmethod
 	def map3_error(c, d, e, points_cde):
+		start_time = time.time()
 		boundary = [0 for _ in range(len(c.cluster) + len(d.cluster) + len(e.cluster))]
 		points = np.concatenate([c.cluster, d.cluster, e.cluster])
 
-	# TODO
+		p_c = c.n / (c.n + c.n)
+		p_d = d.n / (d.n + d.n)
+		p_e = e.n / (e.n + e.n)
+
+		for i, point in enumerate(points):
+			c_marg = error_calc.get_marg(c, point)
+			d_marg = error_calc.get_marg(d, point)
+			e_marg = error_calc.get_marg(e, point)
+
+			res = [1 if (c_marg / d_marg) > (p_d / p_c) else 2,
+				   1 if (c_marg / e_marg) > (p_e / p_c) else 3,
+				   2 if (d_marg / e_marg) > (p_e / p_d) else 3]
+
+			boundary[i] = mode(res)
+
+			# Print progress
+			sys.stdout.write('\r')
+			sys.stdout.write('Calculating MAP3 error... Row: {0:4}/{1:4}'.format(i + 1, len(boundary)))
+		
+		# Confusion Matrix for MAP3
+		c_matrix = confusion_matrix(points_cde, boundary)
+
+		# Calculate Error Rate for MAP3
+		error_rate = 1 - (accuracy_score(points_cde, boundary, normalize=True))  # error rate = 1 - accuracy score
+
+		print('... completed.')
+		end_time = time.time()
+		print('... completed ({:9.4f} seconds).'.format(end_time - start_time))
+		return c_matrix, error_rate
 
 	@staticmethod
 	def nn2_test_error(a, b, testing_points_ab):

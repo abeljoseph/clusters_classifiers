@@ -151,7 +151,7 @@ if __name__ == "__main__":
 	c_matrix_ged2, ged2_error_rate = error_calc.ged2_error(a, b, points_ab)
 	c_matrix_ged3, ged3_error_rate = error_calc.ged3_error(c, d, e, points_cde)
 	c_matrix_map2, map2_error_rate = error_calc.map2_error(a, b, points_ab)
-	# c_matrix_map3, map3_error_rate = error_calc.map3_error(c, d, e, points_cde)
+	c_matrix_map3, map3_error_rate = error_calc.map3_error(c, d, e, points_cde)
 	c_matrix_nn2, nn2_error_rate = error_calc.nn2_test_error(a, b, testing_points_ab)
 	c_matrix_nn3, nn3_error_rate = error_calc.nn3_test_error(c, d, e, testing_points_cde)
 	c_matrix_knn2, knn2_error_rate = error_calc.knn2_test_error(a, b, testing_points_ab)
@@ -188,10 +188,10 @@ if __name__ == "__main__":
 	print("Error Rate MAP2 = {:.3f}".format(map2_error_rate))
 
 	# Print Confusion Matrix for MAP3
-	# print("\nConfusion Matrix MAP3: \n {}".format(c_matrix_map3))
+	print("\nConfusion Matrix MAP3: \n {}".format(c_matrix_map3))
 
 	# Print Error Rate for MAP3
-	# print("Error Rate MAP3 = {:.3f}".format(map3_error_rate))
+	print("Error Rate MAP3 = {:.3f}".format(map3_error_rate))
 
 	# Print Confusion Matrix for NN2
 	print("\nConfusion Matrix NN2: \n {}".format(c_matrix_nn2))
