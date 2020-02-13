@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
+import time
 
 from math import pi, sqrt, exp
 from sklearn.metrics import confusion_matrix
@@ -25,6 +26,7 @@ class classifier:
 
 	@staticmethod
 	def create_med2(a, b):
+		start_time = time.time()
 		num_steps = 500
 
 		# Create Mesh grid
@@ -47,11 +49,13 @@ class classifier:
 			sys.stdout.write('\r')
 			sys.stdout.write('Calculating MED2... Row: {0:4}/{1:4}'.format(i + 1, num_steps))
 
-		print('... completed.')
+		end_time = time.time()
+		print('... completed ({:9.4f} seconds).'.format(end_time - start_time))
 		return [boundary, x_grid, y_grid]
 
 	@staticmethod
 	def create_med3(c, d, e):
+		start_time = time.time()
 		num_steps = 500
 
 		# Create Mesh grid
@@ -79,11 +83,13 @@ class classifier:
 			sys.stdout.write('\r')
 			sys.stdout.write('Calculating MED3... Row: {0:4}/{1:4}'.format(i + 1, num_steps))
 
-		print('... completed.')
+		end_time = time.time()
+		print('... completed ({:9.4f} seconds).'.format(end_time - start_time))
 		return [boundary, x_grid, y_grid]
 
 	@staticmethod
 	def create_ged2(a, b):
+		start_time = time.time()
 		num_steps = 500
 
 		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1,
@@ -105,11 +111,13 @@ class classifier:
 			sys.stdout.write('\r')
 			sys.stdout.write('Calculating GED2... Row: {0:4}/{1:4}'.format(i + 1, num_steps))
 
-		print('... completed.')
+		end_time = time.time()
+		print('... completed ({:9.4f} seconds).'.format(end_time - start_time))
 		return [boundary, x_grid, y_grid]
 
 	@staticmethod
 	def create_ged3(c, d, e):
+		start_time = time.time()
 		num_steps = 500
 
 		x_grid = np.linspace(min(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) - 1,
@@ -137,12 +145,15 @@ class classifier:
 			sys.stdout.write('\r')
 			sys.stdout.write('Calculating GED3... Row: {0:4}/{1:4}'.format(i + 1, num_steps))
 
-		print('... completed.')
+		end_time = time.time()
+		print('... completed ({:9.4f} seconds).'.format(end_time - start_time))
 		return [boundary, x_grid, y_grid]
 
 	@staticmethod
 	def create_map2(a, b):
+		start_time = time.time()
 		num_steps = 100
+		
 		# Create Mesh grid
 		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1,
 							 num_steps)
@@ -158,6 +169,12 @@ class classifier:
 
 		threshold = p_b / p_a
 
+		# Get the marginal given a class
+		def get_marg(cl, coord):
+			coord_mean_diff = (np.subtract(coord, cl.mean))
+			mult = np.matmul(np.transpose(coord_mean_diff), (np.matmul(np.linalg.inv(cl.covariance), coord_mean_diff)))
+			return (1 / (((2 * pi) ** (cl.n / 2)) * sqrt(np.linalg.det(cl.covariance)))) * exp((-1 / 2) * mult)
+
 		for i in range(num_steps):
 			for j in range(num_steps):
 				coord = [x0[i][j], y0[i][j]]
@@ -170,7 +187,8 @@ class classifier:
 				sys.stdout.write('\r')
 				sys.stdout.write('Calculating MAP2... Row: {0:4}/{1:4}'.format(i + 1, num_steps))
 
-		print('... completed.')
+		end_time = time.time()
+		print('... completed ({:9.4f} seconds).'.format(end_time - start_time))
 		return [boundary, x_grid, y_grid]
 
 	@staticmethod
@@ -191,6 +209,7 @@ class classifier:
 
 	@staticmethod
 	def create_nn2(a, b):
+		start_time = time.time()
 		num_steps = 100
 
 		# Create Mesh grid
@@ -223,11 +242,13 @@ class classifier:
 			sys.stdout.write('\r')
 			sys.stdout.write('Calculating NN2...  Row: {0:4}/{1:4}'.format(i + 1, num_steps))
 
-		print('... completed.')
+		end_time = time.time()
+		print('... completed ({:9.4f} seconds).'.format(end_time - start_time))
 		return [boundary, x_grid, y_grid]
 
 	@staticmethod
 	def create_nn3(c, d, e):
+		start_time = time.time()
 		num_steps = 100
 
 		# Create Mesh grid
@@ -271,11 +292,13 @@ class classifier:
 				sys.stdout.write('\r')
 				sys.stdout.write('Calculating NN3...  Row: {0:4}/{1:4}'.format(i + 1, num_steps))
 
-		print('... completed.')
+		end_time = time.time()
+		print('... completed ({:9.4f} seconds).'.format(end_time - start_time))
 		return [boundary, x_grid, y_grid]
 
 	@staticmethod
 	def create_knn2(a, b):
+		start_time = time.time()
 		num_steps = 100
 
 		# Create Mesh grid
@@ -312,11 +335,13 @@ class classifier:
 				sys.stdout.write('\r')
 				sys.stdout.write('Calculating KNN2... Row: {0:4}/{1:4}'.format(i + 1, num_steps))
 
-		print('... completed.')
+		end_time = time.time()
+		print('... completed ({:9.4f} seconds).'.format(end_time - start_time))
 		return [boundary, x_grid, y_grid]
 
 	@staticmethod
 	def create_knn3(c, d, e):
+		start_time = time.time()
 		num_steps = 100
 
 		# Create Mesh grid
@@ -366,5 +391,6 @@ class classifier:
 				sys.stdout.write('\r')
 				sys.stdout.write('Calculating KNN3... Row: {0:4}/{1:4}'.format(i + 1, num_steps))
 
-		print('... completed.')
+		end_time = time.time()
+		print('... completed ({:9.4f} seconds).'.format(end_time - start_time))
 		return [boundary, x_grid, y_grid]
