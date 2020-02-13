@@ -11,13 +11,6 @@ from sklearn.metrics import accuracy_score
 from classifiers import classifier
 
 class error_calc:
-
-	@staticmethod
-	def get_marg(cl, point):
-			point_mean_diff = (np.subtract(point, cl.mean))
-			mult = np.matmul(np.transpose(point_mean_diff), (np.matmul(np.linalg.inv(cl.covariance), point_mean_diff)))
-			return (1 / (((2 * pi) ** (cl.n / 2)) * sqrt(np.linalg.det(cl.covariance)))) * exp((-1 / 2) * mult)
-
 	@staticmethod
 	def med2_error(a, b, points_ab):
 		start_time = time.time()
@@ -151,15 +144,9 @@ class error_calc:
 
 		threshold = p_b / p_a
 
-		# Get the marginal given a class
-		def get_marg(cl, point):
-			point_mean_diff = (np.subtract(point, cl.mean))
-			mult = np.matmul(np.transpose(point_mean_diff), (np.matmul(np.linalg.inv(cl.covariance), point_mean_diff)))
-			return (1 / (((2 * pi) ** (cl.n / 2)) * sqrt(np.linalg.det(cl.covariance)))) * exp((-1 / 2) * mult)
-
 		for i, point in enumerate(points):
-				a_marg = get_marg(a, point)
-				b_marg = get_marg(b, point)
+				a_marg = classifier.get_marg(a, point)
+				b_marg = classifier.get_marg(b, point)
 
 				boundary[i] = 1 if (a_marg / b_marg) > (p_b / p_a) else 2
 
@@ -187,9 +174,9 @@ class error_calc:
 		p_e = e.n / (e.n + e.n)
 
 		for i, point in enumerate(points):
-			c_marg = error_calc.get_marg(c, point)
-			d_marg = error_calc.get_marg(d, point)
-			e_marg = error_calc.get_marg(e, point)
+			c_marg = classifier.get_marg(c, point)
+			d_marg = classifier.get_marg(d, point)
+			e_marg = classifier.get_marg(e, point)
 
 			res = [1 if (c_marg / d_marg) > (p_d / p_c) else 2,
 				   1 if (c_marg / e_marg) > (p_e / p_c) else 3,
