@@ -117,7 +117,7 @@ if __name__ == "__main__":
 	handles_NN_cde = [Rectangle((0, 0), 1, 1, color="C0"), Rectangle((0, 0), 1, 1, color="C1"),
 					  Rectangle((0, 0), 1, 1, color="C2"), contour_NN_cde.collections[0],
 					  contour_kNN_cde.collections[0]]
-	labels_NN_cde = ['Class C', 'Class D', 'Class E', 'NN Classifier', 'kNN Classifier']
+	labels_NN_cde = ['Class C', 'Class D', 'Class E', 'kNN Classifier', 'NN Classifier']
 
 	axs2[1].legend(handles_CDE, labels_NN_cde)
 
