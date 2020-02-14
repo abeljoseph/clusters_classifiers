@@ -141,7 +141,7 @@ class classifier:
 		return [boundary, x_grid, y_grid]
 
 	@staticmethod
-	def get_map2(a, b, num_steps):
+	def get_map2(a, b, num_steps=500):
 
 		# Create Mesh grid
 		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1,
@@ -202,7 +202,6 @@ class classifier:
 		y_grid = np.linspace(min(*c.cluster[:, 1], *d.cluster[:, 1], *e.cluster[:, 1]) - 1,
 							 max(*c.cluster[:, 1], *d.cluster[:, 1], *e.cluster[:, 1]) + 1, num_steps)
 
-		x0, y0 = np.meshgrid(x_grid, y_grid)
 		boundary = [[0 for _ in range(len(x_grid))] for _ in range(len(y_grid))]
 
 		boundary_cd = classifier.get_map2(c, d, num_steps)[0]

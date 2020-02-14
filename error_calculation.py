@@ -1,14 +1,14 @@
 import numpy as np
-import matplotlib.pyplot as plt
 import sys
 import time
 
-from math import pi, sqrt, exp
+from math import sqrt
 from statistics import mode
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 
 from classifiers import classifier
+
 
 class error_calc:
 	@staticmethod
@@ -135,20 +135,25 @@ class error_calc:
 
 	@staticmethod
 	def map2_error(a, b, points_ab):
+		start_time = time.time()
 		boundary = [0 for _ in range(len(a.cluster) + len(b.cluster))]
 		points = np.concatenate([a.cluster, b.cluster])
 
-		# Calculate P(a) and P(b)
-		p_a = a.n / (a.n + b.n)
-		p_b = b.n / (a.n + b.n)
+		inv_cov_a = np.linalg.inv(a.covariance)
+		inv_cov_b = np.linalg.inv(b.covariance)
+		mean_a = np.array(a.mean)
+		mean_b = np.array(b.mean)
 
-		threshold = p_b / p_a
+		Q0 = np.subtract(inv_cov_a, inv_cov_b)
+		Q1 = 2 * (np.dot(mean_b, inv_cov_b) - np.dot(mean_a, inv_cov_a))
+		Q2 = np.dot(np.dot(mean_a, inv_cov_a), mean_a.T) - np.dot(np.dot(mean_b, inv_cov_b), mean_b.T)
+		Q3 = np.log((b.n / a.n))
+		Q4 = np.log(np.linalg.det(a.covariance) / np.linalg.det(b.covariance))
 
 		for i, point in enumerate(points):
-			a_marg = classifier.get_marg(a, point)
-			b_marg = classifier.get_marg(b, point)
-
-			boundary[i] = 1 if (a_marg / b_marg) > (p_b / p_a) else 2
+			dist = np.matmul(np.matmul(point, Q0), np.array(point).T) + np.matmul(Q1, np.array(
+				point).T) + Q2 + 2 * Q3 + Q4
+			boundary[i] = 1 if dist < 0 else 2
 
 			# Print progress
 			sys.stdout.write('\r')
@@ -160,7 +165,8 @@ class error_calc:
 		# Calculate Error Rate for MAP2
 		error_rate = 1 - (accuracy_score(points_ab, boundary, normalize=True))  # error rate = 1 - accuracy score
 
-		print('... completed.')
+		end_time = time.time()
+		print('... completed ({:9.4f} seconds).'.format(end_time - start_time))
 		return c_matrix, error_rate
 
 	@staticmethod
@@ -169,20 +175,32 @@ class error_calc:
 		boundary = [0 for _ in range(len(c.cluster) + len(d.cluster) + len(e.cluster))]
 		points = np.concatenate([c.cluster, d.cluster, e.cluster])
 
-		p_c = c.n / (c.n + c.n)
-		p_d = d.n / (d.n + d.n)
-		p_e = e.n / (e.n + e.n)
+		def dist(a, b, point):
+			inv_cov_a = np.linalg.inv(a.covariance)
+			inv_cov_b = np.linalg.inv(b.covariance)
+			mean_a = np.array(a.mean)
+			mean_b = np.array(b.mean)
+
+			Q0 = np.subtract(inv_cov_a, inv_cov_b)
+			Q1 = 2 * (np.dot(mean_b, inv_cov_b) - np.dot(mean_a, inv_cov_a))
+			Q2 = np.dot(np.dot(mean_a, inv_cov_a), mean_a.T) - np.dot(np.dot(mean_b, inv_cov_b), mean_b.T)
+			Q3 = np.log((b.n / a.n))
+			Q4 = np.log(np.linalg.det(a.covariance) / np.linalg.det(b.covariance))
+
+			return np.matmul(np.matmul(point, Q0), np.array(point).T) + np.matmul(Q1, np.array(
+				point).T) + Q2 + 2 * Q3 + Q4
 
 		for i, point in enumerate(points):
-			c_marg = classifier.get_marg(c, point)
-			d_marg = classifier.get_marg(d, point)
-			e_marg = classifier.get_marg(e, point)
+			dist_cd = dist(c, d, point)
+			dist_ce = dist(c, e, point)
+			dist_de = dist(d, e, point)
 
-			res = [1 if (c_marg / d_marg) > (p_d / p_c) else 2,
-				   1 if (c_marg / e_marg) > (p_e / p_c) else 3,
-				   2 if (d_marg / e_marg) > (p_e / p_d) else 3]
-
-			boundary[i] = mode(res)
+			if dist_cd >= 0 and dist_de <= 0:
+				boundary[i] = 2
+			elif dist_de >= 0 and dist_ce >= 0:
+				boundary[i] = 3
+			elif dist_ce <= 0 and dist_cd <= 0:
+				boundary[i] = 1
 
 			# Print progress
 			sys.stdout.write('\r')
@@ -230,7 +248,8 @@ class error_calc:
 		c_matrix = confusion_matrix(testing_points_ab, boundary)
 
 		# Calculate Error Rate for NN2
-		error_rate = 1 - (accuracy_score(testing_points_ab, boundary, normalize=True))  # error rate = 1 - accuracy score
+		error_rate = 1 - (
+			accuracy_score(testing_points_ab, boundary, normalize=True))  # error rate = 1 - accuracy score
 
 		end_time = time.time()
 		print('... completed ({:9.4f} seconds).'.format(end_time - start_time))
@@ -277,7 +296,8 @@ class error_calc:
 		c_matrix = confusion_matrix(testing_points_cde, boundary)
 
 		# Calculate Error Rate for NN3
-		error_rate = 1 - (accuracy_score(testing_points_cde, boundary, normalize=True))  # error rate = 1 - accuracy score
+		error_rate = 1 - (
+			accuracy_score(testing_points_cde, boundary, normalize=True))  # error rate = 1 - accuracy score
 
 		end_time = time.time()
 		print('... completed ({:9.4f} seconds).'.format(end_time - start_time))
@@ -320,7 +340,8 @@ class error_calc:
 		c_matrix = confusion_matrix(testing_points_ab, boundary)
 
 		# Calculate Error Rate for KNN2
-		error_rate = 1 - (accuracy_score(testing_points_ab, boundary, normalize=True))  # error rate = 1 - accuracy score
+		error_rate = 1 - (
+			accuracy_score(testing_points_ab, boundary, normalize=True))  # error rate = 1 - accuracy score
 
 		end_time = time.time()
 		print('... completed ({:9.4f} seconds).'.format(end_time - start_time))
@@ -373,7 +394,8 @@ class error_calc:
 		c_matrix = confusion_matrix(testing_points_cde, boundary)
 
 		# Calculate Error Rate for KNN3
-		error_rate = 1 - (accuracy_score(testing_points_cde, boundary, normalize=True))  # error rate = 1 - accuracy score
+		error_rate = 1 - (
+			accuracy_score(testing_points_cde, boundary, normalize=True))  # error rate = 1 - accuracy score
 
 		end_time = time.time()
 		print('... completed ({:9.4f} seconds).'.format(end_time - start_time))
