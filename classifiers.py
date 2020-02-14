@@ -18,7 +18,7 @@ class classifier:
 	@staticmethod
 	def create_med2(a, b):
 		start_time = time.time()
-		num_steps = 500
+		num_steps = 1000
 
 		# Create Mesh grid
 		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1,
@@ -47,7 +47,7 @@ class classifier:
 	@staticmethod
 	def create_med3(c, d, e):
 		start_time = time.time()
-		num_steps = 500
+		num_steps = 1000
 
 		# Create Mesh grid
 		x_grid = np.linspace(min(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) - 1,
@@ -81,7 +81,7 @@ class classifier:
 	@staticmethod
 	def create_ged2(a, b):
 		start_time = time.time()
-		num_steps = 100
+		num_steps = 1000
 
 		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1,
 							 num_steps)
@@ -109,7 +109,7 @@ class classifier:
 	@staticmethod
 	def create_ged3(c, d, e):
 		start_time = time.time()
-		num_steps = 100
+		num_steps = 1000
 
 		x_grid = np.linspace(min(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) - 1,
 							 max(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) + 1, num_steps)
@@ -141,7 +141,7 @@ class classifier:
 		return [boundary, x_grid, y_grid]
 
 	@staticmethod
-	def get_map2(a, b, num_steps=500):
+	def get_map2(a, b, num_steps=1000):
 
 		# Create Mesh grid
 		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1,
@@ -175,7 +175,7 @@ class classifier:
 	@staticmethod
 	def create_map2(a, b):
 		start_time = time.time()
-		num_steps = 500
+		num_steps = 1000
 
 		boundary, x_grid, y_grid = classifier.get_map2(a, b, num_steps)
 
@@ -194,7 +194,7 @@ class classifier:
 	@staticmethod
 	def create_map3(c, d, e):
 		start_time = time.time()
-		num_steps = 500
+		num_steps = 1000
 
 		# Create Mesh grid
 		x_grid = np.linspace(min(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) - 1,
@@ -228,7 +228,7 @@ class classifier:
 	@staticmethod
 	def create_nn2(a, b):
 		start_time = time.time()
-		num_steps = 50
+		num_steps = 1000
 
 		# Create Mesh grid
 		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1,
@@ -267,7 +267,7 @@ class classifier:
 	@staticmethod
 	def create_nn3(c, d, e):
 		start_time = time.time()
-		num_steps = 50
+		num_steps = 1000
 
 		# Create Mesh grid
 		x_grid = np.linspace(min(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) - 1,
@@ -317,7 +317,7 @@ class classifier:
 	@staticmethod
 	def create_knn2(a, b):
 		start_time = time.time()
-		num_steps = 50
+		num_steps = 1000
 
 		# Create Mesh grid
 		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1,
@@ -360,7 +360,7 @@ class classifier:
 	@staticmethod
 	def create_knn3(c, d, e):
 		start_time = time.time()
-		num_steps = 50
+		num_steps = 1000
 
 		# Create Mesh grid
 		x_grid = np.linspace(min(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) - 1,
