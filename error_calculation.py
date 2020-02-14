@@ -194,7 +194,6 @@ class error_calc:
 		# Calculate Error Rate for MAP3
 		error_rate = 1 - (accuracy_score(points_cde, boundary, normalize=True))  # error rate = 1 - accuracy score
 
-		print('... completed.')
 		end_time = time.time()
 		print('... completed ({:9.4f} seconds).'.format(end_time - start_time))
 		return c_matrix, error_rate
