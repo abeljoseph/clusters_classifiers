@@ -204,11 +204,11 @@ class classifier:
 		for i in range(num_steps):
 			for j in range(num_steps):
 				if boundary_cd[i][j] >= 0 and boundary_de[i][j] <= 0:
-					boundary[i][j] = 1
-				elif boundary_de[i][j] >= 0 and boundary_ce[i][j] <= 0:
 					boundary[i][j] = 2
-				elif boundary_ce[i][j] >= 0 and boundary_cd[i][j] <= 0:
+				elif boundary_de[i][j] >= 0 and boundary_ce[i][j] >= 0:
 					boundary[i][j] = 3
+				elif boundary_ce[i][j] <= 0 and boundary_cd[i][j] <= 0:
+					boundary[i][j] = 1
 
 				# Print progress
 				sys.stdout.write('\r')
