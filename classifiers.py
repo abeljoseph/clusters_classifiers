@@ -147,7 +147,7 @@ class classifier:
 	@staticmethod
 	def create_map2(a, b):
 		start_time = time.time()
-		num_steps = 200
+		num_steps = 500
 		
 		# Create Mesh grid
 		x_grid = np.linspace(min(*a.cluster[:, 0], *b.cluster[:, 0]) - 1, max(*a.cluster[:, 0], *b.cluster[:, 0]) + 1,
@@ -173,7 +173,7 @@ class classifier:
 			for j in range(num_steps):
 				coord = [x0[i][j], y0[i][j]]
 				dist = np.matmul(np.matmul(coord, Q0), np.array(coord).T) + np.matmul(Q1, np.array(coord).T) + Q2 + 2*Q3+ Q4
-				boundary[i][j] = 1 if dist < 0 else 2
+				boundary[i][j] = dist
 
 				# Print progress
 				sys.stdout.write('\r')
@@ -186,7 +186,7 @@ class classifier:
 	@staticmethod
 	def create_map3(c, d, e):
 		start_time = time.time()
-		num_steps = 200
+		num_steps = 500
 
 		# Create Mesh grid
 		x_grid = np.linspace(min(*c.cluster[:, 0], *d.cluster[:, 0], *e.cluster[:, 0]) - 1,
