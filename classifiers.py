@@ -160,23 +160,24 @@ class classifier:
 
 		inv_cov_a = np.linalg.inv(a.covariance)
 		inv_cov_b = np.linalg.inv(b.covariance)
+		mean_a = np.array(a.mean)
+		mean_b = np.array(b.mean)
 
 		Q0 = np.subtract(inv_cov_a, inv_cov_b)
-		Q1 = 2 * np.subtract(np.matmul(np.array(b.mean).T, inv_cov_b), np.matmul(np.array(a.mean).T, inv_cov_a))
-		Q2 = np.matmul(np.matmul(np.array(a.mean).T, inv_cov_a), a.mean) - np.matmul(np.matmul(np.array(b.mean).T, inv_cov_b), b.mean)
+		Q1 = 2 * (np.dot(mean_b, inv_cov_b) - np.dot(mean_a, inv_cov_a))
+		Q2 = np.dot(np.dot(mean_a, inv_cov_a), mean_a.T) - np.dot(np.dot(mean_b, inv_cov_b), mean_b.T)
 		Q3 = np.log((b.n / a.n))
 		Q4 = np.log(np.linalg.det(a.covariance) / np.linalg.det(b.covariance))
 
-		for row, values in enumerate(boundary):
-			for col in values:
-				coord = [x0[row][col], y0[row][col]]
-				dist = np.matmul(np.matmul(np.array(coord).T, Q0), coord) + np.matmul(Q1, coord) + Q2 + 2 * Q3 + Q4
-
-				boundary[row][col] = 1 if dist < 0 else 2
+		for i in range(num_steps):
+			for j in range(num_steps):
+				coord = [x0[i][j], y0[i][j]]
+				dist = np.matmul(np.matmul(coord, Q0), np.array(coord).T) + np.matmul(Q1, np.array(coord).T) + Q2 + 2*Q3+ Q4
+				boundary[i][j] = dist
 
 				# Print progress
 				sys.stdout.write('\r')
-				sys.stdout.write('Calculating MAP2... Row: {0:4}/{1:4}'.format(row + 1, num_steps))
+				sys.stdout.write('Calculating MAP2... Row: {0:4}/{1:4}'.format(i + 1, num_steps))
 
 		end_time = time.time()
 		print('... completed ({:9.4f} seconds).'.format(end_time - start_time))

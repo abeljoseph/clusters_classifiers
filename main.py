@@ -26,7 +26,7 @@ if __name__ == "__main__":
 	GED_cde, ged_cde_x, ged_cde_y = classifier.create_ged3(c, d, e)
 
 	# Determine MAP classifiers
-	#MAP_ab, map_ab_x, map_ab_y = classifier.create_map2(a, b)
+	MAP_ab, map_ab_x, map_ab_y = classifier.create_map2(a, b)
 	#MAP_cde, map_cde_x, map_cde_y = classifier.create_map3(c, d, e)
 
 	# Create scatters and set appearance for MED, GED, and MAP
@@ -45,11 +45,11 @@ if __name__ == "__main__":
 	# Plot Classifiers
 	contour_MED_ab = axs1[0].contour(med_ab_x, med_ab_y, MED_ab, levels=[0], colors="black")
 	contour_GED_ab = axs1[0].contour(ged_ab_x, ged_ab_y, GED_ab, levels=[0], colors="red")
-	#contour_MAP_ab = axs1[0].contour(map_ab_x, map_ab_y, MAP_ab, levels=[0], colors="green")
+	contour_MAP_ab = axs1[0].contour(map_ab_x, map_ab_y, MAP_ab, levels=[0], colors="green")
 
 	handles_AB = [Rectangle((0, 0), 1, 1, color="C0"), Rectangle((0, 0), 1, 1, color="C1"),
-				  contour_MED_ab.collections[0], contour_GED_ab.collections[0]]
-	labels_AB = ['Class A', 'Class B', 'MED Classifier', 'GED Classifier']
+				  contour_MED_ab.collections[0], contour_GED_ab.collections[0], contour_MAP_ab.collections[0]]
+	labels_AB = ['Class A', 'Class B', 'MED Classifier', 'GED Classifier', 'MAP Classifier']
 
 	axs1[0].legend(handles_AB, labels_AB)
 
