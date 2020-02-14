@@ -173,7 +173,7 @@ class classifier:
 			for j in range(num_steps):
 				coord = [x0[i][j], y0[i][j]]
 				dist = np.matmul(np.matmul(coord, Q0), np.array(coord).T) + np.matmul(Q1, np.array(coord).T) + Q2 + 2*Q3+ Q4
-				boundary[i][j] = dist
+				boundary[i][j] = 1 if dist < 0 else 2
 
 				# Print progress
 				sys.stdout.write('\r')
