@@ -5,8 +5,10 @@ This repository contains the source code for cluster generation and classificati
 ![MED, GED and MAP classifiers](MED_GED_MAP.png)
 ![NN and kNN classifiers](NN_KNN.png)
 
-## Cluster Generation
-Normal distributions for the following classes were created using `numpy.random.multivariate_normal`. Plotted was implemented with `plot` and `scatter` from `matplotlib.pyplot`.  
+## Cluster Generation  
+([data_class.py](data_class.py))  
+Normal distributions for the following classes were created using `numpy.random.multivariate_normal`. Distribution plotting was implemented with `plot` and `scatter` from `matplotlib.pyplot`, and standard deviation contours for each class were plotted using `contour` from the same module.  
+  
 Class A: N<sub>A</sub> = 200, μ<sub>A</sub> = [5 10]<sup>T</sup>,  Σ<sub>A</sub> = [ [8 0], [0 4] ]  
 Class B: N<sub>B</sub> = 200, μ<sub>B</sub> = [10 15]<sup>T</sup>,  Σ<sub>B</sub> = [ [8 0], [0 4] ]  
   
@@ -14,4 +16,14 @@ Class C: N<sub>C</sub> = 100, μ<sub>C</sub> = [5 10]<sup>T</sup>,  Σ<sub>C</su
 Class D: N<sub>D</sub> = 200, μ<sub>D</sub> = [15 10]<sup>T</sup>,  Σ<sub>D</sub> = [ [8 0], [0 8] ]  
 Class E: N<sub>E</sub> = 150, μ<sub>D</sub> = [10 5]<sup>T</sup>,  Σ<sub>E</sub> = [ [10 -5], [-5 20] ]  
 
+## Classifiers  
+The following classifiers were implemented:  
+1. Minimum Euclidean Distance (MED)
+2. Generalized Euclidean Distance (GED)
+3. Maximum A Posterioi (MAP)
+4. Nearest Neighbor (NN)
+5. k-Nearest Neighbor (kNN) with k = 5  
+  
+To classify, a 2D grid was created, each point was classified, and a contour plot was generated.   
 
+## Error Analysis  
