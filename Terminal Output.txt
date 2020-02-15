@@ -1,82 +1,82 @@
 ---------------------- Plot 1 ----------------------
-Calculating MED2... Row: 1000/1000... completed (   5.2474 seconds).
-Calculating MED3... Row: 1000/1000... completed (   7.4743 seconds).
-Calculating GED2... Row: 1000/1000... completed (  54.3610 seconds).
-Calculating GED3... Row: 1000/1000... completed (  69.2620 seconds).
-Calculating MAP2... Row: 1000/1000... completed (  71.0933 seconds).
-Calculating MAP3... Row: 1000/1000... completed (  89.5744 seconds).
+Calculating MED2... Row: 1000/1000... completed (   4.7596 seconds).
+Calculating MED3... Row: 1000/1000... completed (   7.4366 seconds).
+Calculating GED2... Row: 1000/1000... completed (  48.8569 seconds).
+Calculating GED3... Row: 1000/1000... completed (  70.0595 seconds).
+Calculating MAP2... Row: 1000/1000... completed (  70.3780 seconds).
+Calculating MAP3... Row: 1000/1000... completed (  92.6982 seconds).
 c:/Users/furqa/OneDrive/Documents/3A/SYDE 372/syde372_lab1/main.py:48: UserWarning: No contour levels were found within the data range.
   contour_MAP_ab = axs1[0].contour(map_ab_x, map_ab_y, MAP_ab, levels=[0], colors="purple")
 
 ---------------------- Plot 2 ----------------------
-Calculating NN2...  Row: 1000/1000... completed ( 735.1145 seconds).
-Calculating NN3...  Row: 1000/1000... completed (1078.1258 seconds).
-Calculating KNN2... Row: 1000/1000... completed (1143.3506 seconds).
-Calculating KNN3... Row: 1000/1000... completed (1284.4405 seconds).
+Calculating NN2...  Row: 1000/1000... completed ( 744.0694 seconds).
+Calculating NN3...  Row: 1000/1000... completed (1075.2333 seconds).
+Calculating KNN2... Row: 1000/1000... completed (1122.2446 seconds).
+Calculating KNN3... Row: 1000/1000... completed (1289.0020 seconds).
 
 ------------------ Error Analysis ------------------
-Calculating MED2 error... Row:  400/ 400... completed (   0.0569 seconds).
-Calculating MED3 error... Row:  450/ 450... completed (   0.0489 seconds).
-Calculating MED3 error... Row:  400/ 400... completed (   0.0748 seconds).
-Calculating MED3 error... Row:  450/ 450... completed (   0.0939 seconds).
-Calculating MAP2 error... Row:  400/ 400... completed (   0.0391 seconds).
-Calculating MAP3 error... Row:  450/ 450... completed (   0.1867 seconds).
-Calculating NN2 error...  Row:  400/ 400... completed (   0.3495 seconds).
-Calculating NN3 error...  Row:  450/ 450... completed (   0.4474 seconds).
-Calculating KNN2 error... Row:  400/ 400... completed (   0.4156 seconds).
-Calculating KNN3 error... Row:  450/ 450... completed (   0.5298 seconds).
+Calculating MED2 error... Row:  400/ 400... completed (   0.0562 seconds).
+Calculating MED3 error... Row:  450/ 450... completed (   0.0420 seconds).
+Calculating MED3 error... Row:  400/ 400... completed (   0.0669 seconds).
+Calculating MED3 error... Row:  450/ 450... completed (   0.0854 seconds).
+Calculating MAP2 error... Row:  400/ 400... completed (   0.0470 seconds).
+Calculating MAP3 error... Row:  450/ 450... completed (   0.1695 seconds).
+Calculating NN2 error...  Row:  400/ 400... completed (   0.3460 seconds).
+Calculating NN3 error...  Row:  450/ 450... completed (   0.4332 seconds).
+Calculating KNN2 error... Row:  400/ 400... completed (   0.4144 seconds).
+Calculating KNN3 error... Row:  450/ 450... completed (   0.5301 seconds).
 
 Confusion Matrix MED2:
- [[190  10]
- [ 12 188]]
-Error Rate MED2 = 0.055
+ [[180  20]
+ [ 10 190]]
+Error Rate MED2 = 0.075
 
 Confusion Matrix MED3:
- [[ 77   2  21]
- [  2 184  14]
- [ 26  11 113]]
-Error Rate MED3 = 0.169
+ [[ 63   4  33]
+ [  7 178  15]
+ [ 26  16 108]]
+Error Rate MED3 = 0.224
 
 Confusion Matrix GED2:
- [[192   8]
- [  7 193]]
-Error Rate GED2 = 0.037
+ [[188  12]
+ [  8 192]]
+Error Rate GED2 = 0.050
 
 Confusion Matrix GED3:
- [[ 92   1   7]
- [  1 182  17]
- [ 27   8 115]]
-Error Rate GED3 = 0.136
+ [[ 84   1  15]
+ [  7 175  18]
+ [ 29  11 110]]
+Error Rate GED3 = 0.180
 
 Confusion Matrix MAP2:
- [[192   8]
- [  7 193]]
-Error Rate MAP2 = 0.037
+ [[188  12]
+ [  8 192]]
+Error Rate MAP2 = 0.050
 
 Confusion Matrix MAP3:
- [[ 81   2  17]
- [  1 188  11]
- [ 19  16 115]]
-Error Rate MAP3 = 0.147
+ [[ 72   2  26]
+ [  0 187  13]
+ [ 18  20 112]]
+Error Rate MAP3 = 0.176
 
 Confusion Matrix NN2:
- [[187  13]
- [ 19 181]]
-Error Rate NN2 = 0.080
+ [[183  17]
+ [ 24 176]]
+Error Rate NN2 = 0.103
 
 Confusion Matrix NN3:
- [[ 73   1  26]
- [  2 165  33]
- [ 29  17 104]]
-Error Rate NN3 = 0.240
+ [[ 79   2  19]
+ [  4 175  21]
+ [ 41  14  95]]
+Error Rate NN3 = 0.224
 
 Confusion Matrix KNN2:
- [[187  13]
- [ 19 181]]
-Error Rate KNN2 = 0.073
+ [[183  17]
+ [ 24 176]]
+Error Rate KNN2 = 0.080
 
 Confusion Matrix KNN3:
- [[ 75   1  24]
- [  2 174  24]
- [ 23  14 113]]
-Error Rate KNN3 = 0.196
+ [[ 77   1  22]
+ [  2 184  14]
+ [ 26  16 108]]
+Error Rate KNN3 = 0.180
