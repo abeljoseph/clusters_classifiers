@@ -2,8 +2,8 @@
 
 This repository contains the source code for cluster generation and classification of five classes with bivariate Gaussian distribution parameters. Classification was implemented using MED, GED, MAP, NN, and kNN classifiers. Error analysis was conducted by determining the experimental error rate and confusion matrix for each classifier.  
 
-![MED, GED and MAP classifiers](MED_GED_MAP.png)
-![NN and kNN classifiers](NN_KNN.png)
+![MED, GED and MAP classifiers](img/MED_GED_MAP.png)
+![NN and kNN classifiers](img/NN_KNN.png)
 
 ## Cluster Generation
 Normal distributions for the following classes were created using `numpy.random.multivariate_normal`. Distribution plotting was implemented with `plot` and `scatter` from `matplotlib.pyplot`, and standard deviation contours for each class were plotted using `contour` from the same module. Code: [data_class.py](data_class.py)  
