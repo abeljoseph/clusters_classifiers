@@ -6,7 +6,7 @@ This repository contains the source code for cluster generation and classificati
 ![NN and kNN classifiers](img/NN_KNN.png)
 
 ## Cluster Generation
-Normal distributions for the following classes were created using `numpy.random.multivariate_normal`. Distribution plotting was implemented with `plot` and `scatter` from `matplotlib.pyplot`, and standard deviation contours for each class were plotted using `contour` from the same module. Code: [data_class.py](data_class.py)  
+Normal distributions for the following classes were created using `numpy.random.multivariate_normal`. Distribution plotting was implemented with `plot` and `scatter` from `matplotlib.pyplot`, and standard deviation contours for each class were plotted using `contour` from the same module. Code: [data_class.py](src/data_class.py)  
   
 Class A: N<sub>A</sub> = 200, μ<sub>A</sub> = [5 10]<sup>T</sup>,  Σ<sub>A</sub> = [ [8 0], [0 4] ]  
 Class B: N<sub>B</sub> = 200, μ<sub>B</sub> = [10 15]<sup>T</sup>,  Σ<sub>B</sub> = [ [8 0], [0 4] ]  
@@ -23,7 +23,7 @@ The following classifiers were implemented:
 4. Nearest Neighbor (NN)
 5. k-Nearest Neighbor (kNN) with k = 5  
   
-To classify, a 2D grid was created, each point was classified, and a contour plot was generated. Code: [classifiers.py](classifiers.py)  
+To classify, a 2D grid was created, each point was classified, and a contour plot was generated. Code: [classifiers.py](src/classifiers.py)  
   
 ## Error Analysis
-Following classification, the experimental error rate and confusion matrices were determined for each classifier. This was implemented using `accuracy_score` and `confusion_matrix` from `sklearn.metrics`. Code: [error_calculation.py](error_calculation.py)
+Following classification, the experimental error rate and confusion matrices were determined for each classifier. This was implemented using `accuracy_score` and `confusion_matrix` from `sklearn.metrics`. Code: [error_calculation.py](src/error_calculation.py)

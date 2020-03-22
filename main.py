@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 
-from data_class import data_class
-from classifiers import classifier
-from error_calculation import error_calc
+from src.data_class import data_class
+from src.classifiers import classifier
+from src.error_calculation import error_calc
 
 if __name__ == "__main__":
 	# Instantiate classes

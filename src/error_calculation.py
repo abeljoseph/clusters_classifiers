@@ -3,11 +3,10 @@ import sys
 import time
 
 from math import sqrt
-from statistics import mode
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 
-from classifiers import classifier
+from src.classifiers import classifier
 
 
 class error_calc:
